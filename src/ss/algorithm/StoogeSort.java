@@ -10,7 +10,7 @@ public class StoogeSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         stoogeSort(array, 0, array.length() - 1);
     }
 

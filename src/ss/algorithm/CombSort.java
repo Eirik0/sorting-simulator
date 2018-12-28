@@ -12,7 +12,7 @@ public class CombSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         int gap = array.length();
         boolean sorted = false;
 

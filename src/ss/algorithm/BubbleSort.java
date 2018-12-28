@@ -10,7 +10,7 @@ public class BubbleSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         for (int max = array.length() - 1; max >= 0; --max) {
             for (int i = 0; i < max; ++i) {
                 checkStopRequested();

@@ -10,7 +10,7 @@ public class SelectionSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         for (int start = 0; start < array.length() - 1; ++start) {
             int min_i = start;
             SortableElement min = array.get(start);

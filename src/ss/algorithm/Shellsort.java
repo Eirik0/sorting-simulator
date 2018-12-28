@@ -12,12 +12,13 @@ public class Shellsort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         for (int gap : GAPS) {
             for (int i = gap; i < array.length(); ++i) {
                 SortableElement temp = array.get(i);
                 int j = i;
                 for (; j >= gap; j -= gap) {
+                    checkStopRequested();
                     SortableElement e1 = array.get(j - gap);
                     if (array.compare(e1, temp) > 0) {
                         array.set(j, e1);

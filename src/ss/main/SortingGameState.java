@@ -27,7 +27,7 @@ public class SortingGameState implements GameState {
                 algorithm.sort(array);
             } catch (SortStopException e) {
             }
-        }).start();
+        }, "Sort_Thread").start();
     }
 
     @Override

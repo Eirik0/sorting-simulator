@@ -10,7 +10,7 @@ public class InsertionSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         for (int start = 1; start < array.length(); ++start) {
             for (int i = start; i > 0; --i) {
                 checkStopRequested();

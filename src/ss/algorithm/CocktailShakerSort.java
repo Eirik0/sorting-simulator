@@ -10,7 +10,7 @@ public class CocktailShakerSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         int start = 0;
         int end = array.length() - 1;
         while (start <= end) {

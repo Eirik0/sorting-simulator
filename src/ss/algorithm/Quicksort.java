@@ -10,7 +10,7 @@ public class Quicksort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sortImpl(SortableArray array) {
         quickSort(array, 0, array.length() - 1);
     }
 
