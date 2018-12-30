@@ -3,26 +3,26 @@ package ss.algorithm;
 import ss.array.SortableArray;
 import ss.array.SortableElement;
 
-public class InsertionSort extends AbstractStoppableSort {
+public class InsertionSortImproved extends AbstractStoppableSort {
     @Override
     public String getName() {
-        return "Insertion Sort";
+        return "Insertion Sort (improved)";
     }
 
     @Override
     public void sortImpl(SortableArray array) {
         for (int start = 1; start < array.length(); ++start) {
-            for (int i = start; i > 0; --i) {
+            int i = start;
+            SortableElement e2 = array.get(i);
+            for (; i > 0; --i) {
                 checkStopRequested();
                 SortableElement e1 = array.get(i - 1);
-                SortableElement e2 = array.get(i);
-                if (array.compare(e1, e2) > 0) {
-                    array.set(i - 1, e2);
-                    array.set(i, e1);
-                } else {
+                if (array.compare(e1, e2) < 0) {
                     break;
                 }
+                array.set(i, e1);
             }
+            array.set(i, e2);
         }
     }
 }

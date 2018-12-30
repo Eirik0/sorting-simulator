@@ -11,6 +11,7 @@ import ss.algorithm.CocktailShakerSort;
 import ss.algorithm.CombSort;
 import ss.algorithm.CycleSort;
 import ss.algorithm.InsertionSort;
+import ss.algorithm.InsertionSortImproved;
 import ss.algorithm.Quicksort;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.Shellsort;
@@ -26,6 +27,7 @@ public class SortingMain {
             new CombSort(),
             new CycleSort(),
             new InsertionSort(),
+            new InsertionSortImproved(),
             new Quicksort(),
             new SelectionSort(),
             new Shellsort(),
