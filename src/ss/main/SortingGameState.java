@@ -26,6 +26,8 @@ public class SortingGameState implements GameState {
             try {
                 algorithm.sort(array);
             } catch (SortStopException e) {
+            } finally {
+                array.closeSoundPlayer();
             }
         }, "Sort_Thread").start();
     }
@@ -42,7 +44,7 @@ public class SortingGameState implements GameState {
         graphics.setColor(ComponentCreator.foregroundColor());
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithm.getName(), width / 2.0, TITLE_HEIGHT * .25);
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
-                Integer.valueOf(array.getNumAccesses()), Integer.valueOf(array.getNumCompares()), Integer.valueOf(array.getNumInserts()));
+                Long.valueOf(array.getNumAccesses()), Long.valueOf(array.getNumCompares()), Long.valueOf(array.getNumInserts()));
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
         int length = array.length();

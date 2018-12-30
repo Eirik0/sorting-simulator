@@ -4,15 +4,18 @@ import java.awt.Color;
 import java.util.Random;
 
 import ss.main.SortingSimulator;
+import ss.sound.SoundPlayer;
 
 public class SortableArray {
     private static final Random RANDOM = new Random();
 
     private final SortableElement[] array;
 
-    int numCompares = 0;
-    int numAccesses;
-    int numInserts;
+    private long numCompares;
+    private long numAccesses;
+    private long numInserts;
+
+    private final SoundPlayer player;
 
     public SortableArray(int length) {
         array = new SortableElement[length];
@@ -25,21 +28,15 @@ public class SortableArray {
             array[i] = array[rand];
             array[rand] = temp;
         }
+        player = new SoundPlayer(length);
     }
 
     public int length() {
         return array.length;
     }
 
-    public int getValue(int i) {
-        return array[i].value;
-    }
-
-    public Color getColor(int i) {
-        return array[i].getColor();
-    }
-
     public SortableElement get(int i) {
+        player.play(i, SortingSimulator.getAccessTime());
         sleep(SortingSimulator.getAccessTime());
         SortableElement element = array[i];
         element.lastAccess = System.nanoTime();
@@ -62,16 +59,28 @@ public class SortableArray {
         return Integer.compare(e1.value, e2.value);
     }
 
-    public int getNumAccesses() {
+    public long getNumAccesses() {
         return numAccesses;
     }
 
-    public int getNumInserts() {
+    public long getNumInserts() {
         return numInserts;
     }
 
-    public int getNumCompares() {
+    public long getNumCompares() {
         return numCompares;
+    }
+
+    public int getValue(int i) {
+        return array[i].value;
+    }
+
+    public Color getColor(int i) {
+        return array[i].getColor();
+    }
+
+    public void closeSoundPlayer() {
+        player.closeSDL();
     }
 
     private static void sleep(long time) {
