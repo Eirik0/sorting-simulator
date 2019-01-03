@@ -13,6 +13,10 @@ import ss.algorithm.SortingAlgorithm;
 public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
+    
+    private static double accessTime = 1;
+    private static double insertTime = 1;
+    private static double compareTime = 1;
 
     private static GameState sortSelctionMenuState;
     private static GameState sizeSelectionMenuState;
@@ -58,15 +62,28 @@ public class SortingSimulator {
         selectedAlgorithm = algorithm;
     }
 
-    public static int getAccessTime() {
-        return 1;
+
+    public static double getAccessTime() {
+        return accessTime;
     }
 
-    public static int getInsertTime() {
-        return 1;
+    public static void setAccessTime(double time) {
+        accessTime = time;
     }
 
-    public static int getCompareTime() {
-        return 1;
+    public static double getInsertTime() {
+        return insertTime;
+    }
+
+    public static void setInsertTime(double time) {
+        insertTime = time;
+    }
+
+    public static double getCompareTime() {
+        return compareTime;
+    }
+
+    public static void setCompareTime(double time) {
+        compareTime = time;
     }
 }

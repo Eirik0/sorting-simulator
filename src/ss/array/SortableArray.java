@@ -3,10 +3,12 @@ package ss.array;
 import java.awt.Color;
 import java.util.Random;
 
+import gt.gameentity.Updatable;
+import gt.gameloop.TimeConstants;
 import ss.main.SortingSimulator;
 import ss.sound.SoundPlayer;
 
-public class SortableArray {
+public class SortableArray implements Updatable {
     private static final Random RANDOM = new Random();
 
     private final SortableElement[] array;
@@ -14,6 +16,8 @@ public class SortableArray {
     private long numCompares;
     private long numAccesses;
     private long numInserts;
+
+    private volatile double timeAllotted = 0;
 
     private final SoundPlayer player;
 
@@ -31,13 +35,19 @@ public class SortableArray {
         player = new SoundPlayer(length);
     }
 
+    @Override
+    public synchronized void update(double dt) {
+        timeAllotted += dt;
+        notify();
+    }
+
     public int length() {
         return array.length;
     }
 
     public SortableElement get(int i) {
-        player.play(i, SortingSimulator.getAccessTime());
-        sleep(SortingSimulator.getAccessTime());
+        //        player.play(i, SortingSimulator.getAccessTime());
+        waitForTime(SortingSimulator.getAccessTime());
         SortableElement element = array[i];
         element.lastAccess = System.nanoTime();
         ++numAccesses;
@@ -45,18 +55,29 @@ public class SortableArray {
     }
 
     public void set(int i, SortableElement element) {
-        sleep(SortingSimulator.getInsertTime());
+        waitForTime(SortingSimulator.getInsertTime());
         ++numInserts;
         element.lastInsert = System.nanoTime();
         array[i] = element;
     }
 
     public int compare(SortableElement e1, SortableElement e2) {
-        sleep(SortingSimulator.getCompareTime());
+        waitForTime(SortingSimulator.getCompareTime());
         ++numCompares;
         e1.lastCompare = System.nanoTime();
         e2.lastCompare = System.nanoTime();
         return Integer.compare(e1.value, e2.value);
+    }
+
+    private synchronized void waitForTime(double timeUsed) {
+        while (timeAllotted <= 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        timeAllotted -= timeUsed * TimeConstants.NANOS_PER_MILLISECOND;
     }
 
     public long getNumAccesses() {
@@ -79,14 +100,11 @@ public class SortableArray {
         return array[i].getColor();
     }
 
-    public void closeSoundPlayer() {
-        player.closeSDL();
+    public void requestStop() {
+        update(Double.MAX_VALUE);
     }
 
-    private static void sleep(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-        }
+    public synchronized void closeSoundPlayer() {
+        player.closeSDL();
     }
 }

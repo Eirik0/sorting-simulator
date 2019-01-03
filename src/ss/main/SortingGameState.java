@@ -9,6 +9,7 @@ import gt.gamestate.UserInput;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.SortStopException;
 import ss.array.SortableArray;
+import ss.array.SortableElement;
 
 public class SortingGameState implements GameState {
     private static final int TITLE_HEIGHT = 60;
@@ -34,17 +35,30 @@ public class SortingGameState implements GameState {
 
     @Override
     public void update(double dt) {
-        // Do nothing
+        array.update(dt);
     }
 
     @Override
     public void drawOn(Graphics2D graphics) {
         fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
 
-        graphics.setColor(ComponentCreator.foregroundColor());
+        String accessTime = String.format("access:  %.3fms", Double.valueOf(SortingSimulator.getAccessTime()));
+        String compareTime = String.format("compare: %.3fms", Double.valueOf(SortingSimulator.getCompareTime()));
+        String insertTime = String.format("insert:  %.3fms", Double.valueOf(SortingSimulator.getInsertTime()));
+        graphics.setFont(SortingSimulator.SORT_FONT_SMALL);
+        graphics.setColor(SortableElement.ACCESS_COLOR);
+        graphics.drawString(accessTime, 15, 15);
+        graphics.setColor(SortableElement.COMPARE_COLOR);
+        graphics.drawString(compareTime, 15, 35);
+        graphics.setColor(SortableElement.INSERT_COLOR);
+        graphics.drawString(insertTime, 15, 55);
+
+        graphics.setColor(SortableElement.ELEMENT_COLOR);
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithm.getName(), width / 2.0, TITLE_HEIGHT * .25);
+
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
                 Long.valueOf(array.getNumAccesses()), Long.valueOf(array.getNumCompares()), Long.valueOf(array.getNumInserts()));
+        graphics.setColor(ComponentCreator.foregroundColor());
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
         int length = array.length();
@@ -67,9 +81,21 @@ public class SortingGameState implements GameState {
     @Override
     public void handleUserInput(UserInput input) {
         switch (input) {
+        case MINUS_KEY_PRESSED:
+            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() * 1.25);
+            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() * 1.25);
+            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() * 1.25);
+            break;
+        case EQUALS_KEY_PRESSED:
+            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() / 1.25);
+            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() / 1.25);
+            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
+            break;
         case ESC_KEY_PRESSED:
             algorithm.requestStop();
+            array.requestStop();
             GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
+            break;
         }
     }
 }

@@ -8,10 +8,10 @@ import gt.gameloop.TimeConstants;
 public class SortableElement {
     private static final long FADE_TIME = TimeConstants.NANOS_PER_SECOND;
 
-    private static final Color DEFAULT_COLOR = Color.GREEN;
-    private static final Color ACCESS_COLOR = Color.BLUE;
-    private static final Color COMPARE_COLOR = Color.MAGENTA;
-    private static final Color INSERT_COLOR = Color.RED;
+    public static final Color ELEMENT_COLOR = Color.GREEN;
+    public static final Color ACCESS_COLOR = Color.CYAN;
+    public static final Color COMPARE_COLOR = Color.MAGENTA;
+    public static final Color INSERT_COLOR = Color.RED;
 
     final int value;
     long lastAccess = 0;
@@ -30,16 +30,16 @@ public class SortableElement {
         double comparePercent = getColorPercent(timeNow, lastCompare);
         double insertPercent = getColorPercent(timeNow, lastInsert);
         if (accessPercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(ACCESS_COLOR, DEFAULT_COLOR, accessPercent);
+            colors[numColors++] = DrawingMethods.fadeToColorS(ACCESS_COLOR, ELEMENT_COLOR, accessPercent);
         }
         if (comparePercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(COMPARE_COLOR, DEFAULT_COLOR, comparePercent);
+            colors[numColors++] = DrawingMethods.fadeToColorS(COMPARE_COLOR, ELEMENT_COLOR, comparePercent);
         }
         if (insertPercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(INSERT_COLOR, DEFAULT_COLOR, insertPercent);
+            colors[numColors++] = DrawingMethods.fadeToColorS(INSERT_COLOR, ELEMENT_COLOR, insertPercent);
         }
         if (numColors == 0) {
-            return DEFAULT_COLOR;
+            return ELEMENT_COLOR;
         } else if (numColors == 1) {
             return colors[0];
         } else {
