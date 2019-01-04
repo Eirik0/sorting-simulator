@@ -23,14 +23,14 @@ public class SortingGameState implements GameState {
     public SortingGameState(SortingAlgorithm algorithm, int arrayLength) {
         array = new SortableArray(arrayLength);
         this.algorithm = algorithm;
-        new Thread(() -> {
+        SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
                 algorithm.sort(array);
             } catch (SortStopException e) {
             } finally {
-                array.closeSoundPlayer();
+                array.searchStopped();
             }
-        }, "Sort_Thread").start();
+        });
     }
 
     @Override
@@ -92,6 +92,7 @@ public class SortingGameState implements GameState {
             SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
             break;
         case ESC_KEY_PRESSED:
+            SortingSimulator.getSortThreadWorker().waitForStart();
             algorithm.requestStop();
             array.requestStop();
             GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());

@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import gt.async.ThreadWorker;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.menu.ScaledMenuState;
@@ -13,10 +14,12 @@ import ss.algorithm.SortingAlgorithm;
 public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
-    
+
     private static double accessTime = 1;
     private static double insertTime = 1;
     private static double compareTime = 1;
+
+    private static final ThreadWorker sortThreadWorker = new ThreadWorker();
 
     private static GameState sortSelctionMenuState;
     private static GameState sizeSelectionMenuState;
@@ -62,6 +65,9 @@ public class SortingSimulator {
         selectedAlgorithm = algorithm;
     }
 
+    public static ThreadWorker getSortThreadWorker() {
+        return sortThreadWorker;
+    }
 
     public static double getAccessTime() {
         return accessTime;

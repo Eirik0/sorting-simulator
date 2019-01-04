@@ -46,15 +46,16 @@ public class SortableArray implements Updatable {
     }
 
     public SortableElement get(int i) {
-        //        player.play(i, SortingSimulator.getAccessTime());
-        waitForTime(SortingSimulator.getAccessTime());
         SortableElement element = array[i];
+        player.play(element.value, SortingSimulator.getAccessTime());
+        waitForTime(SortingSimulator.getAccessTime());
         element.lastAccess = System.nanoTime();
         ++numAccesses;
         return element;
     }
 
     public void set(int i, SortableElement element) {
+        player.play(element.value, SortingSimulator.getInsertTime());
         waitForTime(SortingSimulator.getInsertTime());
         ++numInserts;
         element.lastInsert = System.nanoTime();
@@ -62,6 +63,7 @@ public class SortableArray implements Updatable {
     }
 
     public int compare(SortableElement e1, SortableElement e2) {
+        player.play((e1.value + e2.value) / 2, SortingSimulator.getCompareTime());
         waitForTime(SortingSimulator.getCompareTime());
         ++numCompares;
         e1.lastCompare = System.nanoTime();
@@ -104,7 +106,7 @@ public class SortableArray implements Updatable {
         update(Double.MAX_VALUE);
     }
 
-    public synchronized void closeSoundPlayer() {
-        player.closeSDL();
+    public synchronized void searchStopped() {
+        player.stop();
     }
 }

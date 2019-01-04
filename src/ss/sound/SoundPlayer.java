@@ -1,9 +1,14 @@
 package ss.sound;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+
+import gt.async.ThreadWorker;
 
 public class SoundPlayer {
     private static final float SAMPLE_RATE = 48000;
@@ -13,12 +18,16 @@ public class SoundPlayer {
     private static final double MIN_FREQ = 27.5; // A0
     private static final double MAX_FREQ = 4185; // C8
 
+    private final ThreadWorker soundThreadWorker = new ThreadWorker();
+    private final Queue<FrequencyAndDuration> playQueue = new ConcurrentLinkedQueue<>();
+    private volatile boolean keepPlaying = true;
+
     private SourceDataLine sdl = null;
 
     private final double hzPerUnit;
 
     public SoundPlayer(int numElements) {
-        AudioFormat af = new AudioFormat(SAMPLE_RATE, 16, 1, true, false);
+        AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, false);
         try {
             sdl = AudioSystem.getSourceDataLine(af);
             sdl.open(af);
@@ -28,12 +37,40 @@ public class SoundPlayer {
             throw new RuntimeException(e);
         }
         hzPerUnit = (MAX_FREQ - MIN_FREQ) / numElements;
+        soundThreadWorker.workOn(() -> {
+            while (keepPlaying) {
+                while (playQueue.peek() == null && keepPlaying) {
+                    try {
+                        synchronized (this) {
+                            wait();
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                double frequency = 0;
+                double duration = 0;
+                int n = 0;
+                FrequencyAndDuration fd;
+                while ((fd = playQueue.poll()) != null) {
+                    frequency += fd.frequency;
+                    duration = Math.max(duration, fd.duration);
+                    ++n;
+                }
+                if (n > 0) {
+                    playInternal(frequency / n, duration);
+                }
+            }
+        });
+        soundThreadWorker.waitForStart();
     }
 
-    public void play(int n, double desiredDuration) {
-        double duration = Math.max(desiredDuration, 10);
+    public synchronized void play(int n, double desiredDuration) {
+        playQueue.add(new FrequencyAndDuration(n * hzPerUnit, Math.max(desiredDuration, 10)));
+        notify();
+    }
 
-        double hz = n * hzPerUnit;
+    public void playInternal(double hz, double duration) {
         int numSamples = (int) Math.round(SAMPLE_RATE * duration / 1000);
 
         byte[] sinWave = new byte[numSamples];
@@ -51,10 +88,29 @@ public class SoundPlayer {
         sdl.write(sinWave, 0, sinWave.length);
     }
 
-    public void closeSDL() {
+    public void stop() {
+        synchronized (this) {
+            keepPlaying = false;
+            notify();
+        }
+        soundThreadWorker.joinThread();
+        closeSDL();
+    }
+
+    private void closeSDL() {
         if (sdl != null) {
             sdl.drain();
             sdl.close();
+        }
+    }
+
+    private static class FrequencyAndDuration {
+        final double frequency;
+        final double duration;
+
+        public FrequencyAndDuration(double frequency, double duration) {
+            this.frequency = frequency;
+            this.duration = duration;
         }
     }
 }
