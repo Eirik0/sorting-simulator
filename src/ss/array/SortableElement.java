@@ -14,12 +14,23 @@ public class SortableElement {
     public static final Color INSERT_COLOR = Color.RED;
 
     final int value;
-    long lastAccess = 0;
-    long lastCompare = 0;
-    long lastInsert = 0;
+    long lastAccess;
+    long lastCompare;
+    long lastInsert;
 
     public SortableElement(int value) {
+        this(value, 0, 0, 0);
+    }
+
+    private SortableElement(int value, long lastAccess, long lastCompare, long lastInsert) {
         this.value = value;
+        this.lastAccess = lastAccess;
+        this.lastCompare = lastCompare;
+        this.lastInsert = lastInsert;
+    }
+
+    public SortableElement copy() {
+        return new SortableElement(value, lastAccess, lastCompare, lastInsert);
     }
 
     public Color getColor() {

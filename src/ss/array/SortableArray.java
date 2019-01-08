@@ -54,7 +54,8 @@ public class SortableArray implements Updatable {
         return element;
     }
 
-    public void set(int i, SortableElement element) {
+    public void set(int i, SortableElement elementToSet) {
+        SortableElement element = elementToSet.copy();
         player.play(element.value, SortingSimulator.getInsertTime());
         waitForTime(SortingSimulator.getInsertTime());
         ++numInserts;
