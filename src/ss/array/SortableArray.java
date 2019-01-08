@@ -11,6 +11,9 @@ import ss.sound.SoundPlayer;
 public class SortableArray implements Updatable {
     private static final Random RANDOM = new Random();
 
+    private final SortableArray parentArray;
+    private SortableArray childArray;
+
     private final SortableElement[] array;
 
     private long numCompares;
@@ -22,6 +25,7 @@ public class SortableArray implements Updatable {
     private final SoundPlayer player;
 
     public SortableArray(int length) {
+        parentArray = null;
         array = new SortableElement[length];
         for (int i = 0; i < array.length; ++i) {
             array[i] = new SortableElement(i + 1);
@@ -35,6 +39,28 @@ public class SortableArray implements Updatable {
         player = new SoundPlayer(length);
     }
 
+    private SortableArray(SortableArray parentArray) {
+        this.parentArray = parentArray;
+        array = new SortableElement[parentArray.array.length];
+        for (int i = 0; i < array.length; ++i) {
+            array[i] = new SortableElement(1);
+        }
+        player = parentArray.player;
+    }
+
+    public SortableArray allocateNew() {
+        childArray = new SortableArray(this);
+        return childArray;
+    }
+
+    public void dellocate() {
+        parentArray.childArray = null;
+    }
+
+    public SortableArray getChildArray() {
+        return childArray;
+    }
+
     @Override
     public synchronized void update(double dt) {
         timeAllotted += dt;
@@ -45,12 +71,20 @@ public class SortableArray implements Updatable {
         return array.length;
     }
 
+    public int numChildren() {
+        if (childArray == null) {
+            return 0;
+        } else {
+            return 1 + childArray.numChildren();
+        }
+    }
+
     public SortableElement get(int i) {
         SortableElement element = array[i];
         player.play(element.value, SortingSimulator.getAccessTime());
         waitForTime(SortingSimulator.getAccessTime());
         element.lastAccess = System.nanoTime();
-        ++numAccesses;
+        incrementAccesses();
         return element;
     }
 
@@ -58,7 +92,7 @@ public class SortableArray implements Updatable {
         SortableElement element = elementToSet.copy();
         player.play(element.value, SortingSimulator.getInsertTime());
         waitForTime(SortingSimulator.getInsertTime());
-        ++numInserts;
+        incrementInserts();
         element.lastInsert = System.nanoTime();
         array[i] = element;
     }
@@ -66,13 +100,45 @@ public class SortableArray implements Updatable {
     public int compare(SortableElement e1, SortableElement e2) {
         player.play((e1.value + e2.value) / 2, SortingSimulator.getCompareTime());
         waitForTime(SortingSimulator.getCompareTime());
-        ++numCompares;
+        incrementCompares();
         e1.lastCompare = System.nanoTime();
         e2.lastCompare = System.nanoTime();
         return Integer.compare(e1.value, e2.value);
     }
 
-    private synchronized void waitForTime(double timeUsed) {
+    private void incrementAccesses() {
+        if (parentArray == null) {
+            ++numAccesses;
+        } else {
+            parentArray.incrementAccesses();
+        }
+    }
+
+    private void incrementInserts() {
+        if (parentArray == null) {
+            ++numInserts;
+        } else {
+            parentArray.incrementInserts();
+        }
+    }
+
+    private void incrementCompares() {
+        if (parentArray == null) {
+            ++numCompares;
+        } else {
+            parentArray.incrementCompares();
+        }
+    }
+
+    private void waitForTime(double timeUsed) {
+        if (parentArray == null) {
+            waitForTimeSynchronized(timeUsed);
+        } else {
+            parentArray.waitForTime(timeUsed);
+        }
+    }
+
+    private synchronized void waitForTimeSynchronized(double timeUsed) {
         while (timeAllotted <= 0) {
             try {
                 wait();

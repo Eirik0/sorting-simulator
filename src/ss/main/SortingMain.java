@@ -12,6 +12,7 @@ import ss.algorithm.CombSort;
 import ss.algorithm.CycleSort;
 import ss.algorithm.InsertionSort;
 import ss.algorithm.InsertionSortImproved;
+import ss.algorithm.MergeSort;
 import ss.algorithm.Quicksort;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.Shellsort;
@@ -28,6 +29,7 @@ public class SortingMain {
             new CycleSort(),
             new InsertionSort(),
             new InsertionSortImproved(),
+            new MergeSort(),
             new Quicksort(),
             new SelectionSort(),
             new Shellsort(),

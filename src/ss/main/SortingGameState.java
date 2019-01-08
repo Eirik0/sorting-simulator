@@ -62,13 +62,24 @@ public class SortingGameState implements GameState {
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
         int length = array.length();
+        int numArrays = 1 + array.numChildren();
         double elementWidth = (double) width / length;
-        double elementUnitHeight = (double) (height - TITLE_HEIGHT) / length;
-        for (int i = 0; i < length; ++i) {
-            double elementHeight = array.getValue(i) * elementUnitHeight;
-            double x0 = i * elementWidth;
-            int actualElementWidth = round((i + 1) * elementWidth) - round(x0);
-            fillRect(graphics, x0, height - elementHeight, actualElementWidth, elementHeight, array.getColor(i));
+        double arrayHeight = (double) (height - TITLE_HEIGHT) / numArrays;
+        double elementUnitHeight = arrayHeight / length;
+        SortableArray arrayToDraw = array;
+        double y0 = arrayHeight + TITLE_HEIGHT;
+        for (int arrayNum = 0; arrayNum < numArrays; ++arrayNum) {
+            for (int i = 0; i < length; ++i) {
+                double elementHeight = arrayToDraw.getValue(i) * elementUnitHeight;
+                double x0 = i * elementWidth;
+                int actualElementWidth = round((i + 1) * elementWidth) - round(x0);
+                fillRect(graphics, x0, y0 - elementHeight, actualElementWidth, elementHeight, arrayToDraw.getColor(i));
+            }
+            y0 += arrayHeight;
+            arrayToDraw = arrayToDraw.getChildArray();
+            if (arrayToDraw == null) {
+                break;
+            }
         }
     }
 
