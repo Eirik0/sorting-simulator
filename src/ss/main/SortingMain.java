@@ -10,6 +10,7 @@ import ss.algorithm.BubbleSort;
 import ss.algorithm.CocktailShakerSort;
 import ss.algorithm.CombSort;
 import ss.algorithm.CycleSort;
+import ss.algorithm.GnomeSort;
 import ss.algorithm.Heapsort;
 import ss.algorithm.InsertionSort;
 import ss.algorithm.InsertionSortImproved;
@@ -28,6 +29,7 @@ public class SortingMain {
             new CocktailShakerSort(),
             new CombSort(),
             new CycleSort(),
+            new GnomeSort(),
             new Heapsort(),
             new InsertionSort(),
             new InsertionSortImproved(),
