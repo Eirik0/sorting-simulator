@@ -14,19 +14,19 @@ public class StoogeSort extends AbstractStoppableSort {
         stoogeSort(array, 0, array.length() - 1);
     }
 
-    public void stoogeSort(SortableArray array, int start, int end) {
+    public void stoogeSort(SortableArray array, int startIndex, int endIndex) {
         checkStopRequested();
-        SortableElement e1 = array.get(start);
-        SortableElement e2 = array.get(end);
-        if (array.compare(e1, e2) > 0) {
-            array.set(start, e2);
-            array.set(end, e1);
+        SortableElement start = array.get(startIndex);
+        SortableElement end = array.get(endIndex);
+        if (array.compare(start, end) > 0) {
+            array.set(startIndex, end);
+            array.set(endIndex, start);
         }
-        if (end - start > 1) {
-            int third = (end + 1 - start) / 3;
-            stoogeSort(array, start, end - third);
-            stoogeSort(array, start + third, end);
-            stoogeSort(array, start, end - third);
+        if (endIndex - startIndex > 1) {
+            int oneThird = (endIndex + 1 - startIndex) / 3;
+            stoogeSort(array, startIndex, endIndex - oneThird);
+            stoogeSort(array, startIndex + oneThird, endIndex);
+            stoogeSort(array, startIndex, endIndex - oneThird);
         }
     }
 }

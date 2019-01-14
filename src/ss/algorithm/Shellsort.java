@@ -14,19 +14,18 @@ public class Shellsort extends AbstractStoppableSort {
     @Override
     public void sortImpl(SortableArray array) {
         for (int gap : GAPS) {
-            for (int i = gap; i < array.length(); ++i) {
-                SortableElement temp = array.get(i);
-                int j = i;
-                for (; j >= gap; j -= gap) {
+            for (int startIndex = gap; startIndex < array.length(); ++startIndex) {
+                SortableElement toInsert = array.get(startIndex);
+                int i = startIndex;
+                for (; i >= gap; i -= gap) {
                     checkStopRequested();
-                    SortableElement e1 = array.get(j - gap);
-                    if (array.compare(e1, temp) > 0) {
-                        array.set(j, e1);
-                    } else {
+                    SortableElement element = array.get(i - gap);
+                    if (array.compare(element, toInsert) < 0) {
                         break;
                     }
+                    array.set(i, element);
                 }
-                array.set(j, temp);
+                array.set(i, toInsert);
             }
         }
     }

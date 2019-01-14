@@ -11,14 +11,14 @@ public class BubbleSort extends AbstractStoppableSort {
 
     @Override
     public void sortImpl(SortableArray array) {
-        for (int max = array.length() - 1; max >= 0; --max) {
-            for (int i = 0; i < max; ++i) {
+        for (int endIndex = array.length() - 1; endIndex >= 0; --endIndex) {
+            for (int i = 0; i < endIndex; ++i) {
                 checkStopRequested();
-                SortableElement e1 = array.get(i);
-                SortableElement e2 = array.get(i + 1);
-                if (array.compare(e1, e2) > 0) {
-                    array.set(i, e2);
-                    array.set(i + 1, e1);
+                SortableElement left = array.get(i);
+                SortableElement right = array.get(i + 1);
+                if (array.compare(left, right) > 0) {
+                    array.set(i, right);
+                    array.set(i + 1, left);
                 }
             }
         }

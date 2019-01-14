@@ -18,32 +18,32 @@ public class MergeSort extends AbstractStoppableSort {
         mergeSort(array, workingArray, 0, array.length());
     }
 
-    public void mergeSort(SortableArray array, SortableArray workingArray, int start, int end) {
+    public void mergeSort(SortableArray array, SortableArray workingArray, int startIndex, int endIndex) {
         checkStopRequested();
-        if (end - start >= 2) {
-            int middle = (start + end) / 2;
+        if (endIndex - startIndex >= 2) {
+            int middleIndex = (startIndex + endIndex) / 2;
 
-            mergeSort(workingArray, array, start, middle);
-            mergeSort(workingArray, array, middle, end);
+            mergeSort(workingArray, array, startIndex, middleIndex);
+            mergeSort(workingArray, array, middleIndex, endIndex);
 
-            int i = start;
-            int j = middle;
-            SortableElement left = workingArray.get(i);
-            SortableElement right = workingArray.get(j);
+            int leftIndex = startIndex;
+            int rightIndex = middleIndex;
+            SortableElement left = workingArray.get(leftIndex);
+            SortableElement right = workingArray.get(rightIndex);
 
-            for (int k = start; k < end; ++k) {
+            for (int i = startIndex; i < endIndex; ++i) {
                 checkStopRequested();
-                if (i < middle && (j >= end || array.compare(left, right) <= 0)) {
-                    array.set(k, left);
-                    ++i;
-                    left = workingArray.get(i);
+                if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {
+                    array.set(i, left);
+                    ++leftIndex;
+                    left = workingArray.get(leftIndex);
                 } else {
-                    array.set(k, right);
-                    ++j;
-                    if (j >= end) {
+                    array.set(i, right);
+                    ++rightIndex;
+                    if (rightIndex >= endIndex) {
                         continue;
                     }
-                    right = workingArray.get(j);
+                    right = workingArray.get(rightIndex);
                 }
             }
         }

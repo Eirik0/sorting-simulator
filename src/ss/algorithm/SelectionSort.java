@@ -11,21 +11,21 @@ public class SelectionSort extends AbstractStoppableSort {
 
     @Override
     public void sortImpl(SortableArray array) {
-        for (int start = 0; start < array.length() - 1; ++start) {
-            int min_i = start;
-            SortableElement min = array.get(start);
-            for (int i = start + 1; i < array.length(); ++i) {
+        for (int startIndex = 0; startIndex < array.length() - 1; ++startIndex) {
+            int minIndex = startIndex;
+            SortableElement minimum = array.get(startIndex);
+            for (int i = startIndex + 1; i < array.length(); ++i) {
                 checkStopRequested();
-                SortableElement e = array.get(i);
-                if (array.compare(min, e) > 0) {
-                    min_i = i;
-                    min = e;
+                SortableElement element = array.get(i);
+                if (array.compare(minimum, element) > 0) {
+                    minIndex = i;
+                    minimum = element;
                 }
             }
-            if (min_i != start) {
-                SortableElement temp = array.get(start);
-                array.set(start, min);
-                array.set(min_i, temp);
+            if (minIndex != startIndex) {
+                SortableElement temp = array.get(startIndex);
+                array.set(startIndex, minimum);
+                array.set(minIndex, temp);
             }
         }
     }

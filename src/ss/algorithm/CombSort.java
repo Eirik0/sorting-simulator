@@ -25,11 +25,11 @@ public class CombSort extends AbstractStoppableSort {
 
             for (int i = 0; i < array.length() - gap; ++i) {
                 checkStopRequested();
-                SortableElement e1 = array.get(i);
-                SortableElement e2 = array.get(i + gap);
-                if (array.compare(e1, e2) > 0) {
-                    array.set(i, e2);
-                    array.set(i + gap, e1);
+                SortableElement left = array.get(i);
+                SortableElement right = array.get(i + gap);
+                if (array.compare(left, right) > 0) {
+                    array.set(i, right);
+                    array.set(i + gap, left);
                     sorted = false;
                 }
             }

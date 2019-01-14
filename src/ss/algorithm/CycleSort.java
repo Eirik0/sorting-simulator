@@ -11,27 +11,27 @@ public class CycleSort extends AbstractStoppableSort {
 
     @Override
     public void sortImpl(SortableArray array) {
-        for (int start = 0; start < array.length() - 1; ++start) {
-            SortableElement item = array.get(start);
+        for (int startIndex = 0; startIndex < array.length() - 1; ++startIndex) {
+            SortableElement item = array.get(startIndex);
 
-            int pos = findPosition(array, start, item);
+            int pos = findPosition(array, startIndex, item);
 
-            if (pos == start) {
+            if (pos == startIndex) {
                 continue;
             }
 
             item = swap(array, pos, item);
 
-            while (pos != start) {
-                pos = findPosition(array, start, item);
+            while (pos != startIndex) {
+                pos = findPosition(array, startIndex, item);
                 item = swap(array, pos, item);
             }
         }
     }
 
-    private int findPosition(SortableArray array, int start, SortableElement item) {
-        int pos = start;
-        for (int i = start + 1; i < array.length(); ++i) {
+    private int findPosition(SortableArray array, int startIndex, SortableElement item) {
+        int pos = startIndex;
+        for (int i = startIndex + 1; i < array.length(); ++i) {
             checkStopRequested();
             if (array.compare(array.get(i), item) < 0) {
                 ++pos;
@@ -40,13 +40,14 @@ public class CycleSort extends AbstractStoppableSort {
         return pos;
     }
 
-    private static SortableElement swap(SortableArray array, int pos, SortableElement item) {
-        SortableElement e1 = array.get(pos);
-        while (array.compare(item, e1) == 0) {
+    private SortableElement swap(SortableArray array, int pos, SortableElement item) {
+        SortableElement element = array.get(pos);
+        while (array.compare(item, element) == 0) {
+            checkStopRequested();
             ++pos;
-            e1 = array.get(pos);
+            element = array.get(pos);
         }
         array.set(pos, item);
-        return e1;
+        return element;
     }
 }

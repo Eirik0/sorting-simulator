@@ -11,34 +11,35 @@ public class CocktailShakerSort extends AbstractStoppableSort {
 
     @Override
     public void sortImpl(SortableArray array) {
-        int start = 0;
-        int end = array.length() - 1;
-        while (start <= end) {
-            int nextEnd = start;
-            for (int i = start; i < end; ++i) {
-                checkStopRequested();
-                SortableElement e1 = array.get(i);
-                SortableElement e2 = array.get(i + 1);
-                if (array.compare(e1, e2) > 0) {
-                    array.set(i, e2);
-                    array.set(i + 1, e1);
-                    nextEnd = i + 1;
-                }
-            }
-            end = nextEnd - 1;
+        int startIndex = 0;
+        int endIndex = array.length() - 1;
 
-            int nextStart = end;
-            for (int i = end; i > start; --i) {
+        while (startIndex <= endIndex) {
+            int nextEndIndex = startIndex;
+            for (int i = startIndex; i < endIndex; ++i) {
                 checkStopRequested();
-                SortableElement e1 = array.get(i - 1);
-                SortableElement e2 = array.get(i);
-                if (array.compare(e1, e2) > 0) {
-                    array.set(i - 1, e2);
-                    array.set(i, e1);
-                    nextStart = i - 1;
+                SortableElement left = array.get(i);
+                SortableElement right = array.get(i + 1);
+                if (array.compare(left, right) > 0) {
+                    array.set(i, right);
+                    array.set(i + 1, left);
+                    nextEndIndex = i + 1;
                 }
             }
-            start = nextStart + 1;
+            endIndex = nextEndIndex - 1;
+
+            int nextStartIndex = endIndex;
+            for (int i = endIndex; i > startIndex; --i) {
+                checkStopRequested();
+                SortableElement left = array.get(i - 1);
+                SortableElement right = array.get(i);
+                if (array.compare(left, right) > 0) {
+                    array.set(i - 1, right);
+                    array.set(i, left);
+                    nextStartIndex = i - 1;
+                }
+            }
+            startIndex = nextStartIndex + 1;
         }
     }
 }

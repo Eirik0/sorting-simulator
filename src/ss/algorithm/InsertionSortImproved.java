@@ -11,18 +11,18 @@ public class InsertionSortImproved extends AbstractStoppableSort {
 
     @Override
     public void sortImpl(SortableArray array) {
-        for (int start = 1; start < array.length(); ++start) {
-            int i = start;
-            SortableElement e2 = array.get(i);
+        for (int startIndex = 1; startIndex < array.length(); ++startIndex) {
+            int i = startIndex;
+            SortableElement toInsert = array.get(i);
             for (; i > 0; --i) {
                 checkStopRequested();
-                SortableElement e1 = array.get(i - 1);
-                if (array.compare(e1, e2) < 0) {
+                SortableElement element = array.get(i - 1);
+                if (array.compare(element, toInsert) < 0) {
                     break;
                 }
-                array.set(i, e1);
+                array.set(i, element);
             }
-            array.set(i, e2);
+            array.set(i, toInsert);
         }
     }
 }
