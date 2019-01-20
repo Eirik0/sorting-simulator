@@ -6,7 +6,7 @@ import ss.array.SortableElement;
 public class InsertionSortBinarySearch extends AbstractStoppableSort {
     @Override
     public String getName() {
-        return "Insertion Sort (w/ Binary Search)";
+        return "Insertion Sort (Binary Search)";
     }
 
     @Override

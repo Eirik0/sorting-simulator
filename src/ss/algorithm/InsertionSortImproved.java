@@ -6,7 +6,7 @@ import ss.array.SortableElement;
 public class InsertionSortImproved extends AbstractStoppableSort {
     @Override
     public String getName() {
-        return "Insertion Sort (improved)";
+        return "Insertion Sort (Shift)";
     }
 
     @Override

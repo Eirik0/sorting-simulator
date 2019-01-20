@@ -32,8 +32,8 @@ public class SortingMain {
             new CycleSort(),
             new GnomeSort(),
             new InsertionSort(),
-            new InsertionSortBinarySearch(),
             new InsertionSortImproved(),
+            new InsertionSortBinarySearch(),
             new SelectionSort(),
     };
     private static final SortingAlgorithm[] FAST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
