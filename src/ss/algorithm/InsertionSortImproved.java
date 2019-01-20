@@ -2,20 +2,21 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopper;
 
-public class InsertionSortImproved extends AbstractStoppableSort {
+public class InsertionSortImproved implements SortingAlgorithm {
     @Override
     public String getName() {
         return "Insertion Sort (Shift)";
     }
 
     @Override
-    public void sortImpl(SortableArray array) {
+    public void sort(SortableArray array) {
         for (int startIndex = 1; startIndex < array.length(); ++startIndex) {
             int i = startIndex;
             SortableElement toInsert = array.get(i);
             for (; i > 0; --i) {
-                checkStopRequested();
+                SortStopper.checkStopRequested();
                 SortableElement element = array.get(i - 1);
                 if (array.compare(element, toInsert) < 0) {
                     break;

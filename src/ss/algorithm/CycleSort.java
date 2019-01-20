@@ -2,15 +2,16 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopper;
 
-public class CycleSort extends AbstractStoppableSort {
+public class CycleSort implements SortingAlgorithm {
     @Override
     public String getName() {
         return "Cycle Sort";
     }
 
     @Override
-    public void sortImpl(SortableArray array) {
+    public void sort(SortableArray array) {
         for (int startIndex = 0; startIndex < array.length() - 1; ++startIndex) {
             SortableElement item = array.get(startIndex);
 
@@ -29,10 +30,10 @@ public class CycleSort extends AbstractStoppableSort {
         }
     }
 
-    private int findPosition(SortableArray array, int startIndex, SortableElement item) {
+    private static int findPosition(SortableArray array, int startIndex, SortableElement item) {
         int pos = startIndex;
         for (int i = startIndex + 1; i < array.length(); ++i) {
-            checkStopRequested();
+            SortStopper.checkStopRequested();
             if (array.compare(array.get(i), item) < 0) {
                 ++pos;
             }
@@ -40,10 +41,10 @@ public class CycleSort extends AbstractStoppableSort {
         return pos;
     }
 
-    private SortableElement swap(SortableArray array, int pos, SortableElement item) {
+    private static SortableElement swap(SortableArray array, int pos, SortableElement item) {
         SortableElement element = array.get(pos);
         while (array.compare(item, element) == 0) {
-            checkStopRequested();
+            SortStopper.checkStopRequested();
             ++pos;
             element = array.get(pos);
         }

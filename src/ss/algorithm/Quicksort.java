@@ -2,20 +2,21 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopper;
 
-public class Quicksort extends AbstractStoppableSort {
+public class Quicksort implements SortingAlgorithm {
     @Override
     public String getName() {
         return "Quicksort";
     }
 
     @Override
-    public void sortImpl(SortableArray array) {
+    public void sort(SortableArray array) {
         quickSort(array, 0, array.length() - 1);
     }
 
-    private void quickSort(SortableArray array, int startIndex, int endIndex) {
-        checkStopRequested();
+    private static void quickSort(SortableArray array, int startIndex, int endIndex) {
+        SortStopper.checkStopRequested();
         if (startIndex < endIndex) {
             SortableElement pivot = array.get((startIndex + endIndex) / 2);
             int leftIndex = startIndex;

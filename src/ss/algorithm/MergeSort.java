@@ -2,15 +2,16 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopper;
 
-public class MergeSort extends AbstractStoppableSort {
+public class MergeSort implements SortingAlgorithm {
     @Override
     public String getName() {
         return "Merge Sort";
     }
 
     @Override
-    public void sortImpl(SortableArray array) {
+    public void sort(SortableArray array) {
         SortableArray workingArray = array.allocateNew();
         for (int i = 0; i < array.length(); ++i) {
             workingArray.set(i, array.get(i));
@@ -18,8 +19,8 @@ public class MergeSort extends AbstractStoppableSort {
         mergeSort(array, workingArray, 0, array.length());
     }
 
-    public void mergeSort(SortableArray array, SortableArray workingArray, int startIndex, int endIndex) {
-        checkStopRequested();
+    private static void mergeSort(SortableArray array, SortableArray workingArray, int startIndex, int endIndex) {
+        SortStopper.checkStopRequested();
         if (endIndex - startIndex >= 2) {
             int middleIndex = (startIndex + endIndex) / 2;
 
@@ -32,7 +33,7 @@ public class MergeSort extends AbstractStoppableSort {
             SortableElement right = workingArray.get(rightIndex);
 
             for (int i = startIndex; i < endIndex; ++i) {
-                checkStopRequested();
+                SortStopper.checkStopRequested();
                 if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {
                     array.set(i, left);
                     ++leftIndex;

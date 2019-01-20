@@ -7,25 +7,28 @@ import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
 import ss.algorithm.SortingAlgorithm;
-import ss.array.SortStopException;
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopException;
+import ss.interrupt.SortStopper;
 
 public class SortingGameState implements GameState {
     private static final int TITLE_HEIGHT = 60;
 
     private final SortableArray array;
-    private final SortingAlgorithm algorithm;
+    private final String algorithmName;
 
     private int width;
     private int height;
 
     public SortingGameState(SortingAlgorithm algorithm, int arrayLength) {
         array = new SortableArray(arrayLength);
-        this.algorithm = algorithm;
+        algorithmName = algorithm.getName();
         SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
+                SortStopper.sortStarted();
                 algorithm.sort(array);
+                SortStopper.sortFinished();
             } catch (SortStopException e) {
             } finally {
                 array.searchStopped();
@@ -54,7 +57,7 @@ public class SortingGameState implements GameState {
         graphics.drawString(insertTime, 15, 55);
 
         graphics.setColor(SortableElement.ELEMENT_COLOR);
-        drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithm.getName(), width / 2.0, TITLE_HEIGHT * .25);
+        drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithmName, width / 2.0, TITLE_HEIGHT * .25);
 
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
                 Long.valueOf(array.getNumAccesses()), Long.valueOf(array.getNumCompares()), Long.valueOf(array.getNumInserts()));
@@ -104,7 +107,7 @@ public class SortingGameState implements GameState {
             break;
         case ESC_KEY_PRESSED:
             SortingSimulator.getSortThreadWorker().waitForStart();
-            algorithm.requestStop();
+            SortStopper.requestStop();
             array.requestStop();
             GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
             break;

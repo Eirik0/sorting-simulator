@@ -2,8 +2,9 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
+import ss.interrupt.SortStopper;
 
-public class CombSort extends AbstractStoppableSort {
+public class CombSort implements SortingAlgorithm {
     private static final double SHRINK = 1.3;
 
     @Override
@@ -12,7 +13,7 @@ public class CombSort extends AbstractStoppableSort {
     }
 
     @Override
-    public void sortImpl(SortableArray array) {
+    public void sort(SortableArray array) {
         int gap = array.length();
         boolean sorted = false;
 
@@ -24,7 +25,7 @@ public class CombSort extends AbstractStoppableSort {
             }
 
             for (int i = 0; i < array.length() - gap; ++i) {
-                checkStopRequested();
+                SortStopper.checkStopRequested();
                 SortableElement left = array.get(i);
                 SortableElement right = array.get(i + gap);
                 if (array.compare(left, right) > 0) {
