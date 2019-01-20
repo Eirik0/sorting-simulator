@@ -2,6 +2,7 @@ package ss.main;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import gt.async.ThreadWorker;
@@ -13,6 +14,7 @@ import ss.algorithm.SortingAlgorithm;
 
 public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
+    public static final Font SORT_FONT_MEDIUM = new Font(Font.MONOSPACED, Font.BOLD, 18);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 
     private static double accessTime = 1;
@@ -29,7 +31,15 @@ public class SortingSimulator {
     private SortingSimulator() {
     }
 
-    public static void createSortSelectionMenuState(SortingAlgorithm[] algorithms) {
+    public static void createSortSelectionMenuState(List<SortingAlgorithm[]> algorithmsList) {
+        List<List<Pair<String, Runnable>>> menuActionsList = new ArrayList<>();
+        for (SortingAlgorithm[] algorithms : algorithmsList) {
+            menuActionsList.add(createSortSelectionActions(algorithms));
+        }
+        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_MEDIUM, menuActionsList);
+    }
+
+    private static List<Pair<String, Runnable>> createSortSelectionActions(SortingAlgorithm[] algorithms) {
         List<Pair<String, Runnable>> menuActions = new ArrayList<>();
         for (SortingAlgorithm algorithm : algorithms) {
             menuActions.add(Pair.valueOf(algorithm.getName(), () -> {
@@ -37,7 +47,7 @@ public class SortingSimulator {
                 GameStateManager.setGameState(getSizeSelectionMenuState());
             }));
         }
-        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, menuActions);
+        return menuActions;
     }
 
     public static GameState getSortSelectionMenuState() {
@@ -50,7 +60,7 @@ public class SortingSimulator {
             Runnable action = () -> GameStateManager.setGameState(new SortingGameState(SortingSimulator.getSelectedAlgorithm(), size));
             menuActions.add(Pair.valueOf(Integer.toString(size), action));
         }
-        sizeSelectionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, menuActions);
+        sizeSelectionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, Collections.singletonList(menuActions));
     }
 
     public static GameState getSizeSelectionMenuState() {

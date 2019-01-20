@@ -1,6 +1,7 @@
 package ss.main;
 
 import java.awt.Dimension;
+import java.util.Arrays;
 
 import gt.component.ComponentCreator;
 import gt.component.GamePanel;
@@ -13,6 +14,7 @@ import ss.algorithm.CycleSort;
 import ss.algorithm.GnomeSort;
 import ss.algorithm.Heapsort;
 import ss.algorithm.InsertionSort;
+import ss.algorithm.InsertionSortBinarySearch;
 import ss.algorithm.InsertionSortImproved;
 import ss.algorithm.MergeSort;
 import ss.algorithm.Quicksort;
@@ -24,19 +26,24 @@ import ss.algorithm.StoogeSort;
 public class SortingMain {
     private static final String TITLE = "Sorting Simulator";
 
-    private static final SortingAlgorithm[] SORTING_ALGORITHMS = new SortingAlgorithm[] {
+    private static final SortingAlgorithm[] SLOW_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new BubbleSort(),
             new CocktailShakerSort(),
-            new CombSort(),
             new CycleSort(),
             new GnomeSort(),
-            new Heapsort(),
             new InsertionSort(),
+            new InsertionSortBinarySearch(),
             new InsertionSortImproved(),
+            new SelectionSort(),
+    };
+    private static final SortingAlgorithm[] FAST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
+            new CombSort(),
+            new Heapsort(),
             new MergeSort(),
             new Quicksort(),
-            new SelectionSort(),
             new Shellsort(),
+    };
+    private static final SortingAlgorithm[] SLOWEST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new StoogeSort()
     };
 
@@ -50,7 +57,7 @@ public class SortingMain {
 
         GameStateManager.setMainPanel(mainPanel);
 
-        SortingSimulator.createSortSelectionMenuState(SORTING_ALGORITHMS);
+        SortingSimulator.createSortSelectionMenuState(Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS));
         SortingSimulator.createSizeSelectionMenuState(ARRAY_SIZES);
 
         GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
