@@ -7,22 +7,23 @@ import ss.interrupt.SortStopper;
 public class InsertionSort implements SortingAlgorithm {
     @Override
     public String getName() {
-        return "Insertion Sort (Swap)";
+        return "Insertion Sort";
     }
 
     @Override
     public void sort(SortableArray array) {
         for (int startIndex = 1; startIndex < array.length(); ++startIndex) {
-            for (int i = startIndex; i > 0; --i) {
+            int i = startIndex;
+            SortableElement toInsert = array.get(i);
+            for (; i > 0; --i) {
                 SortStopper.checkStopRequested();
-                SortableElement left = array.get(i - 1);
-                SortableElement right = array.get(i);
-                if (array.compare(left, right) <= 0) {
+                SortableElement element = array.get(i - 1);
+                if (array.compare(element, toInsert) < 0) {
                     break;
                 }
-                array.set(i - 1, right);
-                array.set(i, left);
+                array.set(i, element);
             }
+            array.set(i, toInsert);
         }
     }
 }
