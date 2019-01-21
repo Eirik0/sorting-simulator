@@ -2,7 +2,6 @@ package ss.interrupt;
 
 public class SortStopper {
     private volatile boolean stopRequested = false;
-    private volatile boolean complete = false;
 
     private static final SortStopper instance = new SortStopper();
 
@@ -11,11 +10,6 @@ public class SortStopper {
 
     public static void sortStarted() {
         instance.stopRequested = false;
-        instance.complete = false;
-    }
-
-    public static void sortFinished() {
-        instance.complete = true;
     }
 
     public static void checkStopRequested() {
@@ -25,8 +19,6 @@ public class SortStopper {
     }
 
     public static void requestStop() {
-        if (!instance.complete) {
-            instance.stopRequested = true;
-        }
+        instance.stopRequested = true;
     }
 }

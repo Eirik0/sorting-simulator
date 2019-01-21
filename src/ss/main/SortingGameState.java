@@ -28,7 +28,6 @@ public class SortingGameState implements GameState {
             try {
                 SortStopper.sortStarted();
                 algorithm.sort(array);
-                SortStopper.sortFinished();
             } catch (SortStopException e) {
             } finally {
                 array.searchStopped();
