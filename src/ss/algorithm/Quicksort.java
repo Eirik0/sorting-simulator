@@ -18,29 +18,33 @@ public class Quicksort implements SortingAlgorithm {
     private static void quickSort(SortableArray array, int startIndex, int endIndex) {
         SortStopper.checkStopRequested();
         if (startIndex < endIndex) {
-            SortableElement pivot = array.get((startIndex + endIndex) / 2);
-            int leftIndex = startIndex;
-            int rightIndex = endIndex;
-            while (leftIndex <= rightIndex) {
-                SortableElement left = array.get(leftIndex);
-                while (array.compare(left, pivot) < 0) {
-                    ++leftIndex;
-                    left = array.get(leftIndex);
-                }
-                SortableElement right = array.get(rightIndex);
-                while (array.compare(right, pivot) > 0) {
-                    --rightIndex;
-                    right = array.get(rightIndex);
-                }
-                if (leftIndex <= rightIndex) {
-                    array.set(leftIndex, right);
-                    array.set(rightIndex, left);
-                    ++leftIndex;
-                    --rightIndex;
-                }
+            int pivotIndex = partition(array, startIndex, endIndex);
+            quickSort(array, startIndex, pivotIndex);
+            quickSort(array, pivotIndex + 1, endIndex);
+        }
+    }
+
+    public static int partition(SortableArray array, int startIndex, int endIndex) {
+        SortableElement pivot = array.get((startIndex + endIndex) / 2);
+        int leftIndex = startIndex;
+        int rightIndex = endIndex;
+        for (;;) {
+            SortStopper.checkStopRequested();
+            SortableElement left = array.get(leftIndex);
+            while (array.compare(left, pivot) < 0) {
+                left = array.get(++leftIndex);
             }
-            quickSort(array, startIndex, rightIndex);
-            quickSort(array, leftIndex, endIndex);
+            SortableElement right = array.get(rightIndex);
+            while (array.compare(right, pivot) > 0) {
+                right = array.get(--rightIndex);
+            }
+            if (leftIndex >= rightIndex) {
+                return rightIndex;
+            }
+            array.set(leftIndex, right);
+            array.set(rightIndex, left);
+            ++leftIndex;
+            --rightIndex;
         }
     }
 }

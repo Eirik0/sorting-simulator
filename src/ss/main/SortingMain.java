@@ -15,6 +15,7 @@ import ss.algorithm.GnomeSort;
 import ss.algorithm.Heapsort;
 import ss.algorithm.InsertionSort;
 import ss.algorithm.InsertionSortBinarySearch;
+import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
 import ss.algorithm.Quicksort;
 import ss.algorithm.SelectionSort;
@@ -37,6 +38,7 @@ public class SortingMain {
     private static final SortingAlgorithm[] FAST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new CombSort(),
             new Heapsort(),
+            new Introsort(),
             new MergeSort(),
             new Quicksort(),
             new Shellsort(),

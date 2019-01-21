@@ -12,26 +12,29 @@ public class Heapsort implements SortingAlgorithm {
 
     @Override
     public void sort(SortableArray array) {
-        for (int startIndex = (array.length() - 2) / 2; startIndex >= 0; --startIndex) {
-            reheapify(array, startIndex, array.length() - 1);
+        heapsort(array, 0, array.length() - 1);
+    }
+
+    public static void heapsort(SortableArray array, int startIndex, int endIndex) {
+        for (int i = getParentIndex(endIndex, startIndex); i >= startIndex; --i) {
+            reheapify(array, i, endIndex, startIndex);
         }
 
-        int endIndex = array.length() - 1;
-        while (endIndex > 0) {
-            SortableElement largest = array.get(0);
+        while (endIndex > startIndex) {
+            SortableElement largest = array.get(startIndex);
             SortableElement element = array.get(endIndex);
-            array.set(0, element);
+            array.set(startIndex, element);
             array.set(endIndex, largest);
             --endIndex;
-            reheapify(array, 0, endIndex);
+            reheapify(array, startIndex, endIndex, startIndex);
         }
     }
 
-    private static void reheapify(SortableArray array, int startIndex, int endIndex) {
+    private static void reheapify(SortableArray array, int startIndex, int endIndex, int offset) {
         int rootIndex = startIndex;
-        while (rootIndex * 2 + 1 <= endIndex) {
+        while (getChildIndex(rootIndex, offset) <= endIndex) {
             SortStopper.checkStopRequested();
-            int childIndex = rootIndex * 2 + 1;
+            int childIndex = getChildIndex(rootIndex, offset);
             SortableElement largestChild = array.get(childIndex);
             if (childIndex + 1 <= endIndex) {
                 SortableElement right = array.get(childIndex + 1);
@@ -48,5 +51,13 @@ public class Heapsort implements SortingAlgorithm {
             array.set(childIndex, parent);
             rootIndex = childIndex;
         }
+    }
+
+    private static int getChildIndex(int parentIndex, int offset) {
+        return offset + (parentIndex - offset) * 2 + 1;
+    }
+
+    private static int getParentIndex(int childIndex, int offset) {
+        return offset + (childIndex - offset - 1) / 2;
     }
 }
