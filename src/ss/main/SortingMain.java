@@ -18,6 +18,7 @@ import ss.algorithm.InsertionSortBinarySearch;
 import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
 import ss.algorithm.Quicksort;
+import ss.algorithm.QuicksortMedianPivot;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.Shellsort;
 import ss.algorithm.SortingAlgorithm;
@@ -41,6 +42,7 @@ public class SortingMain {
             new Introsort(),
             new MergeSort(),
             new Quicksort(),
+            new QuicksortMedianPivot(),
             new Shellsort(),
     };
     private static final SortingAlgorithm[] SLOWEST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
