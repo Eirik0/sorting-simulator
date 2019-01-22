@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class QuicksortMedianPivot implements SortingAlgorithm {
     @Override
@@ -16,7 +15,6 @@ public class QuicksortMedianPivot implements SortingAlgorithm {
     }
 
     private static void quickSort(SortableArray array, int startIndex, int endIndex) {
-        SortStopper.checkStopRequested();
         if (startIndex < endIndex) {
             int pivotIndex = partition(array, startIndex, endIndex);
             quickSort(array, startIndex, pivotIndex);
@@ -29,7 +27,6 @@ public class QuicksortMedianPivot implements SortingAlgorithm {
         int leftIndex = startIndex + 1;
         int rightIndex = endIndex - 1;
         for (;;) {
-            SortStopper.checkStopRequested();
             SortableElement left = array.get(leftIndex);
             while (array.compare(left, pivot) < 0) {
                 left = array.get(++leftIndex);

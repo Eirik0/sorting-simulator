@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class CycleSort implements SortingAlgorithm {
     @Override
@@ -33,7 +32,6 @@ public class CycleSort implements SortingAlgorithm {
     private static int findPosition(SortableArray array, int startIndex, SortableElement item) {
         int pos = startIndex;
         for (int i = startIndex + 1; i < array.length(); ++i) {
-            SortStopper.checkStopRequested();
             if (array.compare(array.get(i), item) < 0) {
                 ++pos;
             }
@@ -44,7 +42,6 @@ public class CycleSort implements SortingAlgorithm {
     private static SortableElement swap(SortableArray array, int pos, SortableElement item) {
         SortableElement element = array.get(pos);
         while (array.compare(item, element) == 0) {
-            SortStopper.checkStopRequested();
             ++pos;
             element = array.get(pos);
         }

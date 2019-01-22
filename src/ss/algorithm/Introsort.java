@@ -1,7 +1,6 @@
 package ss.algorithm;
 
 import ss.array.SortableArray;
-import ss.interrupt.SortStopper;
 
 public class Introsort implements SortingAlgorithm {
     @Override
@@ -16,7 +15,6 @@ public class Introsort implements SortingAlgorithm {
     }
 
     private static void introsort(SortableArray array, int startIndex, int endIndex, int maxDepth) {
-        SortStopper.checkStopRequested();
         if (startIndex < endIndex) {
             if (maxDepth == 0) {
                 Heapsort.heapsort(array, startIndex, endIndex);

@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class InsertionSortPair implements SortingAlgorithm {
     @Override
@@ -23,7 +22,6 @@ public class InsertionSortPair implements SortingAlgorithm {
                 toInsertRight = temp;
             }
             for (; i > 0; --i) {
-                SortStopper.checkStopRequested();
                 SortableElement element = array.get(i - 1);
                 if (array.compare(element, toInsertRight) < 0) {
                     break;
@@ -32,7 +30,6 @@ public class InsertionSortPair implements SortingAlgorithm {
             }
             array.set(i + 1, toInsertRight);
             for (; i > 0; --i) {
-                SortStopper.checkStopRequested();
                 SortableElement element = array.get(i - 1);
                 if (array.compare(element, toInsertLeft) < 0) {
                     break;

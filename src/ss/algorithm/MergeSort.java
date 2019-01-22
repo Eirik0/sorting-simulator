@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class MergeSort implements SortingAlgorithm {
     @Override
@@ -20,7 +19,6 @@ public class MergeSort implements SortingAlgorithm {
     }
 
     private static void mergeSort(SortableArray array, SortableArray workingArray, int startIndex, int endIndex) {
-        SortStopper.checkStopRequested();
         if (endIndex - startIndex >= 2) {
             int middleIndex = (startIndex + endIndex) / 2;
 
@@ -33,7 +31,6 @@ public class MergeSort implements SortingAlgorithm {
             SortableElement right = workingArray.get(rightIndex);
 
             for (int i = startIndex; i < endIndex; ++i) {
-                SortStopper.checkStopRequested();
                 if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {
                     array.set(i, left);
                     ++leftIndex;

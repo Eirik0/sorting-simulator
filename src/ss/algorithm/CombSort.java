@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class CombSort implements SortingAlgorithm {
     private static final double SHRINK = 1.3;
@@ -25,7 +24,6 @@ public class CombSort implements SortingAlgorithm {
             }
 
             for (int i = 0; i < array.length() - gap; ++i) {
-                SortStopper.checkStopRequested();
                 SortableElement left = array.get(i);
                 SortableElement right = array.get(i + gap);
                 if (array.compare(left, right) > 0) {

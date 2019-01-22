@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class Heapsort implements SortingAlgorithm {
     @Override
@@ -33,7 +32,6 @@ public class Heapsort implements SortingAlgorithm {
     private static void reheapify(SortableArray array, int startIndex, int endIndex, int offset) {
         int rootIndex = startIndex;
         while (getChildIndex(rootIndex, offset) <= endIndex) {
-            SortStopper.checkStopRequested();
             int childIndex = getChildIndex(rootIndex, offset);
             SortableElement largestChild = array.get(childIndex);
             if (childIndex + 1 <= endIndex) {

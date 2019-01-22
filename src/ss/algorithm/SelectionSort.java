@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class SelectionSort implements SortingAlgorithm {
     @Override
@@ -16,7 +15,6 @@ public class SelectionSort implements SortingAlgorithm {
             int minIndex = startIndex;
             SortableElement minimum = array.get(startIndex);
             for (int i = startIndex + 1; i < array.length(); ++i) {
-                SortStopper.checkStopRequested();
                 SortableElement element = array.get(i);
                 if (array.compare(minimum, element) > 0) {
                     minIndex = i;

@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class StoogeSort implements SortingAlgorithm {
     @Override
@@ -16,7 +15,6 @@ public class StoogeSort implements SortingAlgorithm {
     }
 
     private static void stoogeSort(SortableArray array, int startIndex, int endIndex) {
-        SortStopper.checkStopRequested();
         SortableElement start = array.get(startIndex);
         SortableElement end = array.get(endIndex);
         if (array.compare(start, end) > 0) {

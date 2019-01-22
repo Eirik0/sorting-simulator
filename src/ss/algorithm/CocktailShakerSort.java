@@ -2,7 +2,6 @@ package ss.algorithm;
 
 import ss.array.SortableArray;
 import ss.array.SortableElement;
-import ss.interrupt.SortStopper;
 
 public class CocktailShakerSort implements SortingAlgorithm {
     @Override
@@ -18,7 +17,6 @@ public class CocktailShakerSort implements SortingAlgorithm {
         while (startIndex <= endIndex) {
             int nextEndIndex = startIndex;
             for (int i = startIndex; i < endIndex; ++i) {
-                SortStopper.checkStopRequested();
                 SortableElement left = array.get(i);
                 SortableElement right = array.get(i + 1);
                 if (array.compare(left, right) > 0) {
@@ -31,7 +29,6 @@ public class CocktailShakerSort implements SortingAlgorithm {
 
             int nextStartIndex = endIndex;
             for (int i = endIndex; i > startIndex; --i) {
-                SortStopper.checkStopRequested();
                 SortableElement left = array.get(i - 1);
                 SortableElement right = array.get(i);
                 if (array.compare(left, right) > 0) {

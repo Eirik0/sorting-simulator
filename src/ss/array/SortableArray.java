@@ -5,6 +5,7 @@ import java.util.Random;
 
 import gt.gameentity.Updatable;
 import gt.gameloop.TimeConstants;
+import ss.interrupt.SortStopper;
 import ss.main.SortingSimulator;
 import ss.sound.SoundPlayer;
 
@@ -131,6 +132,7 @@ public class SortableArray implements Updatable {
     }
 
     private void waitForTime(double timeUsed) {
+        SortStopper.checkStopRequested();
         if (parentArray == null) {
             waitForTimeSynchronized(timeUsed);
         } else {
