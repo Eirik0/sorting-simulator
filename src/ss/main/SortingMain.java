@@ -18,6 +18,7 @@ import ss.algorithm.InsertionSortBinarySearch;
 import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
 import ss.algorithm.Quicksort;
+import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.Shellsort;
@@ -42,6 +43,7 @@ public class SortingMain {
             new Introsort(),
             new MergeSort(),
             new Quicksort(),
+            new QuicksortDualPivot(),
             new QuicksortMedianPivot(),
             new Shellsort(),
     };

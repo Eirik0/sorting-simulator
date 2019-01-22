@@ -12,7 +12,11 @@ public class InsertionSort implements SortingAlgorithm {
 
     @Override
     public void sort(SortableArray array) {
-        for (int startIndex = 1; startIndex < array.length(); ++startIndex) {
+        insertionSort(array, 0, array.length() - 1);
+    }
+
+    public static void insertionSort(SortableArray array, int low, int high) {
+        for (int startIndex = low + 1; startIndex <= high; ++startIndex) {
             int i = startIndex;
             SortableElement toInsert = array.get(i);
             for (; i > 0; --i) {
