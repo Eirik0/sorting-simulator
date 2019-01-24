@@ -23,6 +23,7 @@ import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.SelectionSortLeftRight;
+import ss.algorithm.SelectionSortTwoMinimums;
 import ss.algorithm.Shellsort;
 import ss.algorithm.SortingAlgorithm;
 import ss.algorithm.StoogeSort;
@@ -57,7 +58,8 @@ public class SortingMain {
     };
 
     private static final SortingAlgorithm[] CUSTOM_ALGORITHMS = new SortingAlgorithm[] {
-            new SelectionSortLeftRight()
+            new SelectionSortLeftRight(),
+            new SelectionSortTwoMinimums()
     };
 
     private static final int[] ARRAY_SIZES = new int[] { 25, 50, 100, 250, 500, 1000, 2500, 5000 };

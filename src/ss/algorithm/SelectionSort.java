@@ -31,9 +31,8 @@ public class SelectionSort implements SortingAlgorithm {
             }
         }
         if (minIndex != startIndex) {
-            SortableElement temp = array.get(startIndex);
+            array.set(minIndex, array.get(startIndex));
             array.set(startIndex, minimum);
-            array.set(minIndex, temp);
         }
         return minimum;
     }
