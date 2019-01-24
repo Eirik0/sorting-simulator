@@ -13,7 +13,7 @@ public class MergeSort implements SortingAlgorithm {
     public void sort(SortableArray array) {
         SortableArray workingArray = array.allocateNew();
         for (int i = 0; i < array.length(); ++i) {
-            workingArray.set(i, array.get(i));
+            workingArray.copy(i, array.get(i));
         }
         mergeSort(array, workingArray, 0, array.length());
     }

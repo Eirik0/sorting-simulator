@@ -89,8 +89,11 @@ public class SortableArray implements Updatable {
         return element;
     }
 
-    public void set(int i, SortableElement elementToSet) {
-        SortableElement element = elementToSet.copy();
+    public void copy(int i, SortableElement element) {
+        set(i, element.copy());
+    }
+
+    public void set(int i, SortableElement element) {
         player.play(element.value, SortingSimulator.getInsertTime());
         waitForTime(SortingSimulator.getInsertTime());
         incrementInserts();
