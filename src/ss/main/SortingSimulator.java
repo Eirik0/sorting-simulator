@@ -35,7 +35,7 @@ public class SortingSimulator {
         for (SortingAlgorithm[] algorithms : algorithmsList) {
             menuActionsList.add(createSortSelectionActions(algorithms));
         }
-        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_SMALL, menuActionsList);
+        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_SMALL, 0, menuActionsList);
     }
 
     private static List<Pair<String, Runnable>> createSortSelectionActions(SortingAlgorithm[] algorithms) {
@@ -59,7 +59,7 @@ public class SortingSimulator {
             Runnable action = () -> GameStateManager.setGameState(new SortingGameState(SortingSimulator.getSelectedAlgorithm(), size));
             menuActions.add(Pair.valueOf(Integer.toString(size), action));
         }
-        sizeSelectionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, Collections.singletonList(menuActions));
+        sizeSelectionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, 0.1, Collections.singletonList(menuActions));
     }
 
     public static GameState getSizeSelectionMenuState() {
