@@ -22,6 +22,7 @@ import ss.algorithm.Quicksort;
 import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
 import ss.algorithm.SelectionSort;
+import ss.algorithm.SelectionSortLeftRight;
 import ss.algorithm.Shellsort;
 import ss.algorithm.SortingAlgorithm;
 import ss.algorithm.StoogeSort;
@@ -39,6 +40,7 @@ public class SortingMain {
             new InsertionSortPair(),
             new SelectionSort(),
     };
+
     private static final SortingAlgorithm[] FAST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new CombSort(),
             new Heapsort(),
@@ -49,11 +51,16 @@ public class SortingMain {
             new QuicksortMedianPivot(),
             new Shellsort(),
     };
+
     private static final SortingAlgorithm[] SLOWEST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new StoogeSort()
     };
 
-    private static final int[] ARRAY_SIZES = new int[] { 50, 100, 250, 500, 1000, 2500, 5000 };
+    private static final SortingAlgorithm[] CUSTOM_ALGORITHMS = new SortingAlgorithm[] {
+            new SelectionSortLeftRight()
+    };
+
+    private static final int[] ARRAY_SIZES = new int[] { 25, 50, 100, 250, 500, 1000, 2500, 5000 };
 
     public static void main(String[] args) {
         ComponentCreator.setCrossPlatformLookAndFeel();
@@ -63,7 +70,8 @@ public class SortingMain {
 
         GameStateManager.setMainPanel(mainPanel);
 
-        SortingSimulator.createSortSelectionMenuState(Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS));
+        SortingSimulator.createSortSelectionMenuState(
+                Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS, CUSTOM_ALGORITHMS));
         SortingSimulator.createSizeSelectionMenuState(ARRAY_SIZES);
 
         GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());

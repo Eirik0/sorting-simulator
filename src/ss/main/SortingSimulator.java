@@ -14,7 +14,6 @@ import ss.algorithm.SortingAlgorithm;
 
 public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
-    public static final Font SORT_FONT_MEDIUM = new Font(Font.MONOSPACED, Font.BOLD, 18);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 
     private static double accessTime = 1;
@@ -36,7 +35,7 @@ public class SortingSimulator {
         for (SortingAlgorithm[] algorithms : algorithmsList) {
             menuActionsList.add(createSortSelectionActions(algorithms));
         }
-        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_MEDIUM, menuActionsList);
+        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_SMALL, menuActionsList);
     }
 
     private static List<Pair<String, Runnable>> createSortSelectionActions(SortingAlgorithm[] algorithms) {
