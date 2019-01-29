@@ -13,7 +13,7 @@ public class SortableElement {
     public static final Color COMPARE_COLOR = Color.MAGENTA;
     public static final Color INSERT_COLOR = Color.RED;
 
-    final int value;
+    public final int value;
     long lastAccess;
     long lastCompare;
     long lastInsert;
@@ -30,7 +30,7 @@ public class SortableElement {
     }
 
     public SortableElement copy() {
-        return new SortableElement(value, lastAccess, lastCompare, lastInsert);
+        return new SortableElement(value, 0, 0, 0);
     }
 
     public Color getColor() {

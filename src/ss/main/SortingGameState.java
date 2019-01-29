@@ -7,8 +7,12 @@ import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
 import ss.algorithm.SortingAlgorithm;
+import ss.array.ComplexityCounter;
+import ss.array.Memory;
 import ss.array.SortableArray;
+import ss.array.SortableArray.ArrayType;
 import ss.array.SortableElement;
+import ss.array.TimeManager;
 import ss.interrupt.SortStopException;
 import ss.interrupt.SortStopper;
 
@@ -22,7 +26,10 @@ public class SortingGameState implements GameState {
     private int height;
 
     public SortingGameState(SortingAlgorithm algorithm, int arrayLength) {
-        array = new SortableArray(arrayLength);
+        Memory.clear();
+        ComplexityCounter.reset();
+        TimeManager.reset();
+        array = new SortableArray(ArrayType.SHUFFLED, arrayLength);
         algorithmName = algorithm.getName();
         SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
@@ -37,7 +44,7 @@ public class SortingGameState implements GameState {
 
     @Override
     public void update(double dt) {
-        array.update(dt);
+        TimeManager.addTime(dt);
     }
 
     @Override
@@ -59,29 +66,29 @@ public class SortingGameState implements GameState {
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithmName, width / 2.0, TITLE_HEIGHT * .25);
 
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
-                Long.valueOf(array.getNumAccesses()), Long.valueOf(array.getNumCompares()), Long.valueOf(array.getNumInserts()));
+                ComplexityCounter.getNumAccesses(), ComplexityCounter.getNumCompares(), ComplexityCounter.getNumInserts());
         graphics.setColor(ComponentCreator.foregroundColor());
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
-        int length = array.length();
-        int numArrays = 1 + array.numChildren();
-        double elementWidth = (double) width / length;
-        double arrayHeight = (double) (height - TITLE_HEIGHT) / numArrays;
-        double elementUnitHeight = arrayHeight / length;
-        SortableArray arrayToDraw = array;
+        int memoryRows = Memory.numRows();
+        int memoryCols = 0;
+        for (int row = 0; row < memoryRows; ++row) {
+            memoryCols = Math.max(memoryCols, Memory.getRow(row).length);
+        }
+        double arrayHeight = (double) (height - TITLE_HEIGHT) / memoryRows;
+        double elementWidth = (double) width / memoryCols;
+        double elementUnitHeight = arrayHeight / memoryCols;
         double y0 = arrayHeight + TITLE_HEIGHT;
-        for (int arrayNum = 0; arrayNum < numArrays; ++arrayNum) {
-            for (int i = 0; i < length; ++i) {
-                double elementHeight = arrayToDraw.getValue(i) * elementUnitHeight;
+        for (int rowNum = 0; rowNum < memoryRows; ++rowNum) {
+            SortableElement[] row = Memory.getRow(rowNum);
+            for (int i = 0; i < row.length; ++i) {
+                SortableElement element = row[i];
+                double elementHeight = element.value * elementUnitHeight;
                 double x0 = i * elementWidth;
                 int actualElementWidth = round((i + 1) * elementWidth) - round(x0);
-                fillRect(graphics, x0, y0 - elementHeight, actualElementWidth, elementHeight, arrayToDraw.getColor(i));
+                fillRect(graphics, x0, y0 - elementHeight, actualElementWidth, elementHeight, element.getColor());
             }
             y0 += arrayHeight;
-            arrayToDraw = arrayToDraw.getChildArray();
-            if (arrayToDraw == null) {
-                break;
-            }
         }
     }
 
@@ -107,7 +114,7 @@ public class SortingGameState implements GameState {
         case ESC_KEY_PRESSED:
             SortingSimulator.getSortThreadWorker().waitForStart();
             SortStopper.requestStop();
-            array.requestStop();
+            TimeManager.requestStop();
             GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
             break;
         }
