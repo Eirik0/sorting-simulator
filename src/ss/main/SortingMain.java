@@ -19,6 +19,7 @@ import ss.algorithm.InsertionSortBinarySearch;
 import ss.algorithm.InsertionSortPair;
 import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
+import ss.algorithm.PancakeSort;
 import ss.algorithm.Quicksort;
 import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
@@ -56,6 +57,7 @@ public class SortingMain {
     };
 
     private static final SortingAlgorithm[] SLOWEST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
+            new PancakeSort(),
             new StoogeSort()
     };
 
