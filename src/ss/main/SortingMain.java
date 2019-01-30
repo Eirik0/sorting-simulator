@@ -7,6 +7,7 @@ import gt.component.ComponentCreator;
 import gt.component.GamePanel;
 import gt.component.MainFrame;
 import gt.gamestate.GameStateManager;
+import ss.algorithm.BinaryTreeSort;
 import ss.algorithm.BubbleSort;
 import ss.algorithm.CocktailShakerSort;
 import ss.algorithm.CombSort;
@@ -43,6 +44,7 @@ public class SortingMain {
     };
 
     private static final SortingAlgorithm[] FAST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
+            new BinaryTreeSort(),
             new CombSort(),
             new Heapsort(),
             new Introsort(),
