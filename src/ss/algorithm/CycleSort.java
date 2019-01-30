@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class CycleSort implements SortingAlgorithm {
     @Override
@@ -10,9 +10,9 @@ public class CycleSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         for (int startIndex = 0; startIndex < array.length() - 1; ++startIndex) {
-            SortableElement item = array.get(startIndex);
+            SInteger item = array.get(startIndex);
 
             int pos = findPosition(array, startIndex, item);
 
@@ -29,7 +29,7 @@ public class CycleSort implements SortingAlgorithm {
         }
     }
 
-    private static int findPosition(SortableArray array, int startIndex, SortableElement item) {
+    private static int findPosition(SArray array, int startIndex, SInteger item) {
         int pos = startIndex;
         for (int i = startIndex + 1; i < array.length(); ++i) {
             if (array.compare(array.get(i), item) < 0) {
@@ -39,8 +39,8 @@ public class CycleSort implements SortingAlgorithm {
         return pos;
     }
 
-    private static SortableElement swap(SortableArray array, int pos, SortableElement item) {
-        SortableElement element = array.get(pos);
+    private static SInteger swap(SArray array, int pos, SInteger item) {
+        SInteger element = array.get(pos);
         while (array.compare(item, element) == 0) {
             ++pos;
             element = array.get(pos);

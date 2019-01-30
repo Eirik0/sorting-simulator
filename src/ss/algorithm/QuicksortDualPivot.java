@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 /**
  * Vladimir Yaroslavskiy's Dual-Pivot Quicksort
@@ -16,17 +16,17 @@ public class QuicksortDualPivot implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         dualPivotQuicksort(array, 0, array.length() - 1);
     }
 
-    private static void dualPivotQuicksort(SortableArray array, int startIndex, int stopIndex) {
+    private static void dualPivotQuicksort(SArray array, int startIndex, int stopIndex) {
         int len = stopIndex - startIndex;
         if (len < TINY_SIZE) { // insertion sort on tiny array
             InsertionSort.insertionSort(array, startIndex, stopIndex);
             return;
         }
-        SortableElement x;
+        SInteger x;
         // median indexes
         int sixth = len / 6;
         int m1 = startIndex + sixth;
@@ -81,8 +81,8 @@ public class QuicksortDualPivot implements SortingAlgorithm {
             array.set(m5, x);
         }
         // pivots: [ < pivot1 | pivot1 <= && <= pivot2 | > pivot2 ]
-        SortableElement pivot1 = array.get(m2);
-        SortableElement pivot2 = array.get(m4);
+        SInteger pivot1 = array.get(m2);
+        SInteger pivot2 = array.get(m4);
         boolean diffPivots = array.compare(pivot1, pivot2) != 0;
         array.set(m2, array.get(startIndex));
         array.set(m4, array.get(stopIndex));

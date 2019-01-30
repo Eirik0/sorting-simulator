@@ -1,8 +1,8 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableArray.ArrayType;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SArray.ArrayType;
+import ss.array.SInteger;
 
 public class BinaryTreeSort implements SortingAlgorithm {
     private static final int NULL_VALUE = 0;
@@ -13,7 +13,7 @@ public class BinaryTreeSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         BinaryTree tree = new BinaryTree(array.length());
         for (int i = 0; i < array.length(); ++i) {
             tree.insert(array.get(i));
@@ -22,34 +22,34 @@ public class BinaryTreeSort implements SortingAlgorithm {
     }
 
     private static class BinaryTree {
-        private final SortableArray elements;
-        private final SortableArray leftChildIndexes;
-        private final SortableArray rightChildIndexes;
+        private final SArray elements;
+        private final SArray leftChildIndexes;
+        private final SArray rightChildIndexes;
 
         private int position = 0;
 
         BinaryTree(int size) {
-            elements = new SortableArray(ArrayType.EMPTY, size);
-            leftChildIndexes = new SortableArray(ArrayType.EMPTY, size);
-            rightChildIndexes = new SortableArray(ArrayType.EMPTY, size);
+            elements = new SArray(ArrayType.EMPTY, size);
+            leftChildIndexes = new SArray(ArrayType.EMPTY, size);
+            rightChildIndexes = new SArray(ArrayType.EMPTY, size);
         }
 
-        void insert(SortableElement element) {
+        void insert(SInteger element) {
             if (position > 0) {
                 int rootIndex = 0;
                 for (;;) {
-                    SortableElement root = elements.get(rootIndex);
+                    SInteger root = elements.get(rootIndex);
                     int childIndex;
                     if (elements.compare(element, root) < 0) {
                         childIndex = leftChildIndexes.get(rootIndex).value;
                         if (childIndex == NULL_VALUE) {
-                            leftChildIndexes.set(rootIndex, new SortableElement(position));
+                            leftChildIndexes.set(rootIndex, new SInteger(position));
                             break;
                         }
                     } else {
                         childIndex = rightChildIndexes.get(rootIndex).value;
                         if (childIndex == NULL_VALUE) {
-                            rightChildIndexes.set(rootIndex, new SortableElement(position));
+                            rightChildIndexes.set(rootIndex, new SInteger(position));
                             break;
                         }
                     }
@@ -59,11 +59,11 @@ public class BinaryTreeSort implements SortingAlgorithm {
             elements.copy(position++, element);
         }
 
-        void fill(SortableArray array) {
+        void fill(SArray array) {
             fill(array, 0, 0);
         }
 
-        private int fill(SortableArray array, int getIndex, int setIndex) {
+        private int fill(SArray array, int getIndex, int setIndex) {
             int leftChildIndex = leftChildIndexes.get(getIndex).value;
             if (leftChildIndex != NULL_VALUE) {
                 setIndex = fill(array, leftChildIndex, setIndex);

@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class SelectionSortLeftRight implements SortingAlgorithm {
     @Override
@@ -10,7 +10,7 @@ public class SelectionSortLeftRight implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         int leftIndex = 0;
         int rightIndex = array.length() / 2;
         int endIndex = array.length() - 1;
@@ -18,14 +18,14 @@ public class SelectionSortLeftRight implements SortingAlgorithm {
         SelectionSort.selectMin(array, 0, rightIndex - 1);
         SelectionSort.selectMin(array, rightIndex, endIndex);
 
-        SortableElement left = array.get(leftIndex);
-        SortableElement right = array.get(rightIndex);
+        SInteger left = array.get(leftIndex);
+        SInteger right = array.get(rightIndex);
 
         boolean even = false;
         for (;;) {
             boolean minRight = array.compare(left, right) > 0;
             if (minRight) {
-                SortableElement temp = array.get(leftIndex + 1);
+                SInteger temp = array.get(leftIndex + 1);
                 array.set(leftIndex, right);
                 array.set(leftIndex + 1, left);
                 array.set(rightIndex, temp);

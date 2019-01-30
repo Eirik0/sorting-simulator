@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class CombSort implements SortingAlgorithm {
     private static final double SHRINK = 1.3;
@@ -12,7 +12,7 @@ public class CombSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         int gap = array.length();
         boolean sorted = false;
 
@@ -24,8 +24,8 @@ public class CombSort implements SortingAlgorithm {
             }
 
             for (int i = 0; i < array.length() - gap; ++i) {
-                SortableElement left = array.get(i);
-                SortableElement right = array.get(i + gap);
+                SInteger left = array.get(i);
+                SInteger right = array.get(i + gap);
                 if (array.compare(left, right) > 0) {
                     array.set(i, right);
                     array.set(i + gap, left);

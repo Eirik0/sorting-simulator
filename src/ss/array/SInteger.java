@@ -5,7 +5,7 @@ import java.awt.Color;
 import gt.gameentity.DrawingMethods;
 import gt.gameloop.TimeConstants;
 
-public class SortableElement {
+public class SInteger {
     private static final long FADE_TIME = TimeConstants.NANOS_PER_SECOND;
 
     public static final Color ELEMENT_COLOR = Color.GREEN;
@@ -14,23 +14,24 @@ public class SortableElement {
     public static final Color INSERT_COLOR = Color.RED;
 
     public final int value;
+
     long lastAccess;
     long lastCompare;
     long lastInsert;
 
-    public SortableElement(int value) {
+    public SInteger(int value) {
         this(value, 0, 0, 0);
     }
 
-    private SortableElement(int value, long lastAccess, long lastCompare, long lastInsert) {
+    private SInteger(int value, long lastAccess, long lastCompare, long lastInsert) {
         this.value = value;
         this.lastAccess = lastAccess;
         this.lastCompare = lastCompare;
         this.lastInsert = lastInsert;
     }
 
-    public SortableElement copy() {
-        return new SortableElement(value, 0, 0, 0);
+    public SInteger copy() {
+        return new SInteger(value, 0, 0, 0);
     }
 
     public Color getColor() {
@@ -72,5 +73,10 @@ public class SortableElement {
             blue += colors[i].getBlue();
         }
         return new Color(DrawingMethods.roundS(red / numColors), DrawingMethods.roundS(green / numColors), DrawingMethods.roundS(blue / numColors));
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(value);
     }
 }

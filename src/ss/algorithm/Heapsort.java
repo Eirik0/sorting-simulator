@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class Heapsort implements SortingAlgorithm {
     @Override
@@ -10,18 +10,18 @@ public class Heapsort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         heapsort(array, 0, array.length() - 1);
     }
 
-    public static void heapsort(SortableArray array, int startIndex, int endIndex) {
+    public static void heapsort(SArray array, int startIndex, int endIndex) {
         for (int i = getParentIndex(endIndex, startIndex); i >= startIndex; --i) {
             reheapify(array, i, endIndex, startIndex);
         }
 
         while (endIndex > startIndex) {
-            SortableElement largest = array.get(startIndex);
-            SortableElement element = array.get(endIndex);
+            SInteger largest = array.get(startIndex);
+            SInteger element = array.get(endIndex);
             array.set(startIndex, element);
             array.set(endIndex, largest);
             --endIndex;
@@ -29,19 +29,19 @@ public class Heapsort implements SortingAlgorithm {
         }
     }
 
-    private static void reheapify(SortableArray array, int startIndex, int endIndex, int offset) {
+    private static void reheapify(SArray array, int startIndex, int endIndex, int offset) {
         int rootIndex = startIndex;
         while (getChildIndex(rootIndex, offset) <= endIndex) {
             int childIndex = getChildIndex(rootIndex, offset);
-            SortableElement largestChild = array.get(childIndex);
+            SInteger largestChild = array.get(childIndex);
             if (childIndex + 1 <= endIndex) {
-                SortableElement right = array.get(childIndex + 1);
+                SInteger right = array.get(childIndex + 1);
                 if (array.compare(largestChild, right) < 0) {
                     largestChild = right;
                     ++childIndex;
                 }
             }
-            SortableElement parent = array.get(rootIndex);
+            SInteger parent = array.get(rootIndex);
             if (array.compare(parent, largestChild) >= 0) {
                 break;
             }

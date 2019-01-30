@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class GnomeSort implements SortingAlgorithm {
     @Override
@@ -10,11 +10,11 @@ public class GnomeSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         int firstIndex = 1;
         while (firstIndex < array.length()) {
-            SortableElement left = array.get(firstIndex - 1);
-            SortableElement right = array.get(firstIndex);
+            SInteger left = array.get(firstIndex - 1);
+            SInteger right = array.get(firstIndex);
             if (array.compare(left, right) <= 0) {
                 ++firstIndex;
             } else {

@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class SelectionSortTwoMinimums implements SortingAlgorithm {
     @Override
@@ -10,16 +10,16 @@ public class SelectionSortTwoMinimums implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         int endIndex = array.length() - 1;
         for (int startIndex = 0; startIndex < endIndex - 1; startIndex += 2) {
             int firstIndex = startIndex;
             int secondIndex = startIndex + 1;
-            SortableElement[] firstAndSecond = sortPair(array, firstIndex, secondIndex, true);
-            SortableElement first = firstAndSecond[0];
-            SortableElement second = firstAndSecond[1];
+            SInteger[] firstAndSecond = sortPair(array, firstIndex, secondIndex, true);
+            SInteger first = firstAndSecond[0];
+            SInteger second = firstAndSecond[1];
             for (int i = startIndex + 2; i <= endIndex; ++i) {
-                SortableElement element = array.get(i);
+                SInteger element = array.get(i);
                 if (array.compare(second, element) > 0) {
                     if (array.compare(first, element) > 0) {
                         secondIndex = firstIndex;

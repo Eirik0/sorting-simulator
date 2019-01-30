@@ -5,7 +5,7 @@ import java.util.Random;
 import ss.main.SortingSimulator;
 import ss.sound.SoundPlayer;
 
-public class SortableArray {
+public class SArray {
     public enum ArrayType {
         EMPTY,
         SHUFFLED
@@ -13,25 +13,25 @@ public class SortableArray {
 
     private static final Random RANDOM = new Random();
 
-    private final SortableElement[] array;
+    private final SInteger[] array;
 
     private final SoundPlayer player;
 
-    public SortableArray(ArrayType type, int length) {
+    public SArray(ArrayType type, int length) {
         array = Memory.allocate(length);
         switch (type) {
         case EMPTY:
             for (int i = 0; i < array.length; ++i) {
-                array[i] = new SortableElement(0);
+                array[i] = new SInteger(0);
             }
             break;
         case SHUFFLED:
             for (int i = 0; i < array.length; ++i) {
-                array[i] = new SortableElement(i + 1);
+                array[i] = new SInteger(i + 1);
             }
             for (int i = array.length - 1; i >= 0; --i) {
                 int rand = RANDOM.nextInt(i + 1);
-                SortableElement temp = array[i];
+                SInteger temp = array[i];
                 array[i] = array[rand];
                 array[rand] = temp;
             }
@@ -44,8 +44,8 @@ public class SortableArray {
         return array.length;
     }
 
-    public SortableElement get(int i) {
-        SortableElement element = array[i];
+    public SInteger get(int i) {
+        SInteger element = array[i];
         player.play(element.value, SortingSimulator.getAccessTime());
         TimeManager.waitForTime(SortingSimulator.getAccessTime());
         ComplexityCounter.incrementAccesses();
@@ -53,11 +53,11 @@ public class SortableArray {
         return element;
     }
 
-    public void copy(int i, SortableElement element) {
+    public void copy(int i, SInteger element) {
         set(i, element.copy());
     }
 
-    public void set(int i, SortableElement element) {
+    public void set(int i, SInteger element) {
         player.play(element.value, SortingSimulator.getInsertTime());
         TimeManager.waitForTime(SortingSimulator.getInsertTime());
         ComplexityCounter.incrementInserts();
@@ -65,7 +65,7 @@ public class SortableArray {
         array[i] = element;
     }
 
-    public int compare(SortableElement e1, SortableElement e2) {
+    public int compare(SInteger e1, SInteger e2) {
         player.play((e1.value + e2.value) / 2, SortingSimulator.getCompareTime());
         TimeManager.waitForTime(SortingSimulator.getCompareTime());
         ComplexityCounter.incrementCompares();

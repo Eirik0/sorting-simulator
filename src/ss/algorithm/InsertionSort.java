@@ -1,7 +1,7 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SInteger;
 
 public class InsertionSort implements SortingAlgorithm {
     @Override
@@ -10,16 +10,16 @@ public class InsertionSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
+    public void sort(SArray array) {
         insertionSort(array, 0, array.length() - 1);
     }
 
-    public static void insertionSort(SortableArray array, int low, int high) {
+    public static void insertionSort(SArray array, int low, int high) {
         for (int startIndex = low + 1; startIndex <= high; ++startIndex) {
             int i = startIndex;
-            SortableElement toInsert = array.get(i);
+            SInteger toInsert = array.get(i);
             for (; i > 0; --i) {
-                SortableElement element = array.get(i - 1);
+                SInteger element = array.get(i - 1);
                 if (array.compare(element, toInsert) < 0) {
                     break;
                 }

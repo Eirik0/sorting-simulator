@@ -9,9 +9,9 @@ import gt.gamestate.UserInput;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.ComplexityCounter;
 import ss.array.Memory;
-import ss.array.SortableArray;
-import ss.array.SortableArray.ArrayType;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SArray.ArrayType;
+import ss.array.SInteger;
 import ss.array.TimeManager;
 import ss.interrupt.SortStopException;
 import ss.interrupt.SortStopper;
@@ -19,7 +19,7 @@ import ss.interrupt.SortStopper;
 public class SortingGameState implements GameState {
     private static final int TITLE_HEIGHT = 60;
 
-    private final SortableArray array;
+    private final SArray array;
     private final String algorithmName;
 
     private int width;
@@ -29,7 +29,7 @@ public class SortingGameState implements GameState {
         Memory.clear();
         ComplexityCounter.reset();
         TimeManager.reset();
-        array = new SortableArray(ArrayType.SHUFFLED, arrayLength);
+        array = new SArray(ArrayType.SHUFFLED, arrayLength);
         algorithmName = algorithm.getName();
         SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
@@ -55,14 +55,14 @@ public class SortingGameState implements GameState {
         String compareTime = String.format("compare: %.3fms", Double.valueOf(SortingSimulator.getCompareTime()));
         String insertTime = String.format("insert:  %.3fms", Double.valueOf(SortingSimulator.getInsertTime()));
         graphics.setFont(SortingSimulator.SORT_FONT_SMALL);
-        graphics.setColor(SortableElement.ACCESS_COLOR);
+        graphics.setColor(SInteger.ACCESS_COLOR);
         graphics.drawString(accessTime, 15, 15);
-        graphics.setColor(SortableElement.COMPARE_COLOR);
+        graphics.setColor(SInteger.COMPARE_COLOR);
         graphics.drawString(compareTime, 15, 35);
-        graphics.setColor(SortableElement.INSERT_COLOR);
+        graphics.setColor(SInteger.INSERT_COLOR);
         graphics.drawString(insertTime, 15, 55);
 
-        graphics.setColor(SortableElement.ELEMENT_COLOR);
+        graphics.setColor(SInteger.ELEMENT_COLOR);
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithmName, width / 2.0, TITLE_HEIGHT * .25);
 
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
@@ -80,9 +80,9 @@ public class SortingGameState implements GameState {
         double elementUnitHeight = arrayHeight / memoryCols;
         double y0 = arrayHeight + TITLE_HEIGHT;
         for (int rowNum = 0; rowNum < memoryRows; ++rowNum) {
-            SortableElement[] row = Memory.getRow(rowNum);
+            SInteger[] row = Memory.getRow(rowNum);
             for (int i = 0; i < row.length; ++i) {
-                SortableElement element = row[i];
+                SInteger element = row[i];
                 double elementHeight = element.value * elementUnitHeight;
                 double x0 = i * elementWidth;
                 int actualElementWidth = round((i + 1) * elementWidth) - round(x0);

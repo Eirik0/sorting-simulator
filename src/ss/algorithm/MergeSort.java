@@ -1,8 +1,8 @@
 package ss.algorithm;
 
-import ss.array.SortableArray;
-import ss.array.SortableArray.ArrayType;
-import ss.array.SortableElement;
+import ss.array.SArray;
+import ss.array.SArray.ArrayType;
+import ss.array.SInteger;
 
 public class MergeSort implements SortingAlgorithm {
     @Override
@@ -11,15 +11,15 @@ public class MergeSort implements SortingAlgorithm {
     }
 
     @Override
-    public void sort(SortableArray array) {
-        SortableArray workingArray = new SortableArray(ArrayType.EMPTY, array.length());
+    public void sort(SArray array) {
+        SArray workingArray = new SArray(ArrayType.EMPTY, array.length());
         for (int i = 0; i < array.length(); ++i) {
             workingArray.copy(i, array.get(i));
         }
         mergeSort(array, workingArray, 0, array.length());
     }
 
-    private static void mergeSort(SortableArray array, SortableArray workingArray, int startIndex, int endIndex) {
+    private static void mergeSort(SArray array, SArray workingArray, int startIndex, int endIndex) {
         if (endIndex - startIndex >= 2) {
             int middleIndex = (startIndex + endIndex) / 2;
 
@@ -28,8 +28,8 @@ public class MergeSort implements SortingAlgorithm {
 
             int leftIndex = startIndex;
             int rightIndex = middleIndex;
-            SortableElement left = workingArray.get(leftIndex);
-            SortableElement right = workingArray.get(rightIndex);
+            SInteger left = workingArray.get(leftIndex);
+            SInteger right = workingArray.get(rightIndex);
 
             for (int i = startIndex; i < endIndex; ++i) {
                 if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {

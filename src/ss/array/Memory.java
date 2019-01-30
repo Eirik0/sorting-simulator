@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Memory {
-    private final List<SortableElement[]> allocatedMemory = new ArrayList<>();
+    private final List<SInteger[]> allocatedMemory = new ArrayList<>();
 
     private static final Memory instance = new Memory();
 
     private Memory() {
     }
 
-    public static SortableElement[] allocate(int length) {
-        SortableElement[] array = new SortableElement[length];
+    public static SInteger[] allocate(int length) {
+        SInteger[] array = new SInteger[length];
         instance.allocatedMemory.add(array);
         return array;
     }
@@ -25,7 +25,7 @@ public class Memory {
         return instance.allocatedMemory.size();
     }
 
-    public static SortableElement[] getRow(int row) {
+    public static SInteger[] getRow(int row) {
         return instance.allocatedMemory.get(row);
     }
 }
