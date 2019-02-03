@@ -23,6 +23,7 @@ import ss.algorithm.PancakeSort;
 import ss.algorithm.Quicksort;
 import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
+import ss.algorithm.RadixSortLSDBaseTwo;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.SelectionSortLeftRight;
 import ss.algorithm.SelectionSortTwoMinimums;
@@ -61,6 +62,10 @@ public class SortingMain {
             new StoogeSort()
     };
 
+    private static final SortingAlgorithm[] NON_COMPARISON_ALGORITHMS = new SortingAlgorithm[] {
+            new RadixSortLSDBaseTwo(),
+    };
+
     private static final SortingAlgorithm[] CUSTOM_ALGORITHMS = new SortingAlgorithm[] {
             new SelectionSortLeftRight(),
             new SelectionSortTwoMinimums()
@@ -77,7 +82,7 @@ public class SortingMain {
         GameStateManager.setMainPanel(mainPanel);
 
         SortingSimulator.createSortSelectionMenuState(
-                Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS, CUSTOM_ALGORITHMS));
+                Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS, NON_COMPARISON_ALGORITHMS, CUSTOM_ALGORITHMS));
         SortingSimulator.createSizeSelectionMenuState(ARRAY_SIZES);
 
         GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
