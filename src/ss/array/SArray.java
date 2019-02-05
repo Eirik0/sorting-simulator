@@ -8,7 +8,10 @@ import ss.sound.SoundPlayer;
 public class SArray {
     public enum ArrayType {
         EMPTY,
-        SHUFFLED
+        IN_ORDER,
+        REVERSED,
+        SHUFFLED,
+        MANY_DUPLICATES
     }
 
     private static final Random RANDOM = new Random();
@@ -25,19 +28,46 @@ public class SArray {
                 array[i] = new SInteger(0);
             }
             break;
-        case SHUFFLED:
+        case IN_ORDER:
+            populateInOrder();
+            break;
+        case REVERSED:
             for (int i = 0; i < array.length; ++i) {
-                array[i] = new SInteger(i + 1);
+                array[i] = new SInteger(array.length - i);
             }
-            for (int i = array.length - 1; i >= 0; --i) {
-                int rand = RANDOM.nextInt(i + 1);
-                SInteger temp = array[i];
-                array[i] = array[rand];
-                array[rand] = temp;
+            break;
+        case SHUFFLED:
+            populateInOrder();
+            shuffle();
+            break;
+        case MANY_DUPLICATES:
+            int step = array.length / 10 + 1;
+            int n = array.length;
+            for (int i = 0; i < array.length; ++i) {
+                array[i] = new SInteger(n);
+                if ((i % step) == step - 1) {
+                    n -= step;
+                }
             }
+            shuffle();
             break;
         }
         player = new SoundPlayer(length);
+    }
+
+    private void populateInOrder() {
+        for (int i = 0; i < array.length; ++i) {
+            array[i] = new SInteger(i + 1);
+        }
+    }
+
+    private void shuffle() {
+        for (int i = array.length - 1; i >= 0; --i) {
+            int rand = RANDOM.nextInt(i + 1);
+            SInteger temp = array[i];
+            array[i] = array[rand];
+            array[rand] = temp;
+        }
     }
 
     public int length() {

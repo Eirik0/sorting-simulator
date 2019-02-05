@@ -25,11 +25,11 @@ public class SortingGameState implements GameState {
     private int width;
     private int height;
 
-    public SortingGameState(SortingAlgorithm algorithm, int arrayLength) {
+    public SortingGameState(SortingAlgorithm algorithm, ArrayType arrayType, int arrayLength) {
         Memory.clear();
         ComplexityCounter.reset();
         TimeManager.reset();
-        array = new SArray(ArrayType.SHUFFLED, arrayLength);
+        array = new SArray(arrayType, arrayLength);
         algorithmName = algorithm.getName();
         SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
