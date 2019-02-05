@@ -17,6 +17,7 @@ import ss.algorithm.Heapsort;
 import ss.algorithm.InsertionSort;
 import ss.algorithm.InsertionSortBinarySearch;
 import ss.algorithm.InsertionSortPair;
+import ss.algorithm.InsertionSortRootTuples;
 import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
 import ss.algorithm.PancakeSort;
@@ -67,6 +68,7 @@ public class SortingMain {
     };
 
     private static final SortingAlgorithm[] CUSTOM_ALGORITHMS = new SortingAlgorithm[] {
+            new InsertionSortRootTuples(),
             new SelectionSortLeftRight(),
             new SelectionSortTwoMinimums()
     };

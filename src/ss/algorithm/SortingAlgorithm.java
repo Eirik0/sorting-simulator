@@ -8,7 +8,7 @@ public interface SortingAlgorithm {
 
     void sort(SArray array);
 
-    default SInteger[] sortPair(SArray array, int firstIndex, int secondIndex, boolean set) {
+    static SInteger[] sortPair(SArray array, int firstIndex, int secondIndex, boolean set) {
         SInteger first = array.get(firstIndex);
         SInteger second = array.get(secondIndex);
         if (array.compare(first, second) > 0) {

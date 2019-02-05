@@ -14,7 +14,7 @@ public class InsertionSortPair implements SortingAlgorithm {
         int startIndex = 1;
         for (; startIndex <= array.length() - 2; startIndex += 2) {
             int i = startIndex;
-            SInteger[] firstAndSecond = sortPair(array, i, i + 1, false);
+            SInteger[] firstAndSecond = SortingAlgorithm.sortPair(array, i, i + 1, false);
             SInteger first = firstAndSecond[0];
             SInteger second = firstAndSecond[1];
             for (; i > 0; --i) {

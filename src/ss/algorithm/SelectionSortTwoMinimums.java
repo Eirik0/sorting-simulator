@@ -15,7 +15,7 @@ public class SelectionSortTwoMinimums implements SortingAlgorithm {
         for (int startIndex = 0; startIndex < endIndex - 1; startIndex += 2) {
             int firstIndex = startIndex;
             int secondIndex = startIndex + 1;
-            SInteger[] firstAndSecond = sortPair(array, firstIndex, secondIndex, true);
+            SInteger[] firstAndSecond = SortingAlgorithm.sortPair(array, firstIndex, secondIndex, true);
             SInteger first = firstAndSecond[0];
             SInteger second = firstAndSecond[1];
             for (int i = startIndex + 2; i <= endIndex; ++i) {
@@ -41,6 +41,6 @@ public class SelectionSortTwoMinimums implements SortingAlgorithm {
                 }
             }
         }
-        sortPair(array, array.length() - 2, array.length() - 1, true);
+        SortingAlgorithm.sortPair(array, array.length() - 2, array.length() - 1, true);
     }
 }

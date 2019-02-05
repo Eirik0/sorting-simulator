@@ -70,26 +70,51 @@ public class SortingGameState implements GameState {
         graphics.setColor(ComponentCreator.foregroundColor());
         drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
-        int memoryRows = Memory.numRows();
-        int memoryCols = 0;
-        for (int row = 0; row < memoryRows; ++row) {
-            memoryCols = Math.max(memoryCols, Memory.getRow(row).length);
-        }
-        double arrayHeight = (double) (height - TITLE_HEIGHT) / memoryRows;
-        double elementWidth = (double) width / memoryCols;
-        double elementUnitHeight = arrayHeight / memoryCols;
+        int[] colsAndRows = calculateColsAndRows();
+        int colsToDraw = colsAndRows[0];
+        int rowsToDraw = colsAndRows[1];
+
+        double arrayHeight = (double) (height - TITLE_HEIGHT) / rowsToDraw;
+        double elementWidth = (double) width / colsToDraw;
+        double elementUnitHeight = arrayHeight / colsToDraw;
         double y0 = arrayHeight + TITLE_HEIGHT;
-        for (int rowNum = 0; rowNum < memoryRows; ++rowNum) {
+        int columnNum = 0;
+        for (int rowNum = 0; rowNum < Memory.numRows(); ++rowNum) {
             SInteger[] row = Memory.getRow(rowNum);
             for (int i = 0; i < row.length; ++i) {
                 SInteger element = row[i];
                 double elementHeight = element.value * elementUnitHeight;
-                double x0 = i * elementWidth;
-                int actualElementWidth = round((i + 1) * elementWidth) - round(x0);
+                double x0 = (i + columnNum) * elementWidth;
+                int actualElementWidth = round((i + columnNum + 1) * elementWidth) - round(x0);
                 fillRect(graphics, x0, y0 - elementHeight, actualElementWidth, elementHeight, element.getColor());
             }
-            y0 += arrayHeight;
+
+            if (rowNum < Memory.numRows() - 1 && columnNum + row.length + Memory.getRow(rowNum + 1).length < colsToDraw) {
+                columnNum += row.length;
+            } else {
+                y0 += arrayHeight;
+                columnNum = 0;
+            }
         }
+    }
+
+    private static int[] calculateColsAndRows() {
+        int memoryCols = 0;
+        for (int row = 0; row < Memory.numRows(); ++row) {
+            memoryCols = Math.max(memoryCols, Memory.getRow(row).length);
+        }
+        int columnNum = 0;
+        int memoryRows = 0;
+        for (int rowNum = 0; rowNum < Memory.numRows(); ++rowNum) {
+            SInteger[] row = Memory.getRow(rowNum);
+            if (rowNum < Memory.numRows() - 1 && columnNum + row.length + Memory.getRow(rowNum + 1).length < memoryCols) {
+                columnNum += row.length;
+            } else {
+                ++memoryRows;
+                columnNum = 0;
+            }
+        }
+        return new int[] { memoryCols, memoryRows };
     }
 
     @Override
