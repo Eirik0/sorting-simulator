@@ -13,23 +13,23 @@ public class InsertionSortRootTuples implements SortingAlgorithm {
 
     @Override
     public void sort(SArray array) {
-        insertionSort(array);
+        insertionSort(array, array.length());
     }
 
-    private static void insertionSort(SArray array) {
-        if (array.length() < 5) {
-            InsertionSort.insertionSort(array, 0, array.length() - 1);
+    private static void insertionSort(SArray array, int length) {
+        if (length < 5) {
+            InsertionSort.insertionSort(array, 0, length - 1);
             return;
         }
-        int sqrtLen = (int) Math.sqrt(array.length());
+        int sqrtLen = (int) Math.sqrt(length);
         SArray workingArray = new SArray(ArrayType.EMPTY, sqrtLen);
         int startIndex = 0;
-        while (startIndex < array.length()) {
+        while (startIndex < length) {
             int numToInsert = 0;
-            for (; numToInsert < sqrtLen && startIndex + numToInsert < array.length(); ++numToInsert) {
+            for (; numToInsert < sqrtLen && startIndex + numToInsert < length; ++numToInsert) {
                 workingArray.copy(numToInsert, array.get(startIndex + numToInsert));
             }
-            insertionSort(workingArray);
+            insertionSort(workingArray, numToInsert);
             int i = startIndex;
             do {
                 SInteger toInsert = workingArray.get(--numToInsert);
