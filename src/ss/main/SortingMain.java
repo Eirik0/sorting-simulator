@@ -20,6 +20,7 @@ import ss.algorithm.InsertionSortPair;
 import ss.algorithm.InsertionSortRootTuples;
 import ss.algorithm.Introsort;
 import ss.algorithm.MergeSort;
+import ss.algorithm.MergeSortBottomUp;
 import ss.algorithm.PancakeSort;
 import ss.algorithm.Quicksort;
 import ss.algorithm.QuicksortDualPivot;
@@ -52,6 +53,7 @@ public class SortingMain {
             new Heapsort(),
             new Introsort(),
             new MergeSort(),
+            new MergeSortBottomUp(),
             new Quicksort(),
             new QuicksortDualPivot(),
             new QuicksortMedianPivot(),

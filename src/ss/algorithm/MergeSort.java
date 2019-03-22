@@ -26,24 +26,28 @@ public class MergeSort implements SortingAlgorithm {
             mergeSort(workingArray, array, startIndex, middleIndex);
             mergeSort(workingArray, array, middleIndex, endIndex);
 
-            int leftIndex = startIndex;
-            int rightIndex = middleIndex;
-            SInteger left = workingArray.get(leftIndex);
-            SInteger right = workingArray.get(rightIndex);
+            merge(array, workingArray, startIndex, middleIndex, endIndex);
+        }
+    }
 
-            for (int i = startIndex; i < endIndex; ++i) {
-                if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {
-                    array.copy(i, left);
-                    ++leftIndex;
-                    left = workingArray.get(leftIndex);
-                } else {
-                    array.copy(i, right);
-                    ++rightIndex;
-                    if (rightIndex >= endIndex) {
-                        continue;
-                    }
-                    right = workingArray.get(rightIndex);
+    public static void merge(SArray array, SArray workingArray, int startIndex, int middleIndex, int endIndex) {
+        int leftIndex = startIndex;
+        int rightIndex = middleIndex;
+        SInteger left = workingArray.get(leftIndex);
+        SInteger right = workingArray.get(rightIndex);
+
+        for (int i = startIndex; i < endIndex; ++i) {
+            if (leftIndex < middleIndex && (rightIndex >= endIndex || array.compare(left, right) <= 0)) {
+                array.copy(i, left);
+                ++leftIndex;
+                left = workingArray.get(leftIndex);
+            } else {
+                array.copy(i, right);
+                ++rightIndex;
+                if (rightIndex >= endIndex) {
+                    continue;
                 }
+                right = workingArray.get(rightIndex);
             }
         }
     }
