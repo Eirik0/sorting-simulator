@@ -16,7 +16,7 @@ public class MergeSortBottomUp implements SortingAlgorithm {
         for (int width = 1; width < array.length(); width = 2 * width) {
             for (int i = 0; i < array.length(); i = i + 2 * width) {
                 int middleIndex = Math.min(i + width, array.length() - 1);
-                int endIndex = Math.min(i + 2 * width, array.length() - 1);
+                int endIndex = Math.min(i + 2 * width, array.length());
                 MergeSort.merge(workingArray, array, i, middleIndex, endIndex);
             }
             SArray tempArray = array;
