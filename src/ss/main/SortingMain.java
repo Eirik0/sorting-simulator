@@ -26,6 +26,7 @@ import ss.algorithm.Quicksort;
 import ss.algorithm.QuicksortDualPivot;
 import ss.algorithm.QuicksortMedianPivot;
 import ss.algorithm.RadixSortLSDBaseTwo;
+import ss.algorithm.RadixSortMSDBase16;
 import ss.algorithm.SelectionSort;
 import ss.algorithm.SelectionSortLeftRight;
 import ss.algorithm.SelectionSortTwoMinimums;
@@ -67,6 +68,7 @@ public class SortingMain {
 
     private static final SortingAlgorithm[] NON_COMPARISON_ALGORITHMS = new SortingAlgorithm[] {
             new RadixSortLSDBaseTwo(),
+            new RadixSortMSDBase16()
     };
 
     private static final SortingAlgorithm[] CUSTOM_ALGORITHMS = new SortingAlgorithm[] {

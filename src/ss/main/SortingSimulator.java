@@ -17,9 +17,9 @@ public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 
-    private static double accessTime = 1;
-    private static double insertTime = 1;
-    private static double compareTime = 1;
+    private static double accessTime = 10;
+    private static double insertTime = 10;
+    private static double compareTime = 10;
 
     private static final ThreadWorker sortThreadWorker = new ThreadWorker();
 
