@@ -175,6 +175,11 @@ public class SortingSimulationState implements GameState {
             SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() / 1.25);
             SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
             break;
+        case R_KEY_PRESSED:
+            SortingSimulator.setAccessTime(10);
+            SortingSimulator.setInsertTime(10);
+            SortingSimulator.setCompareTime(10);
+            break;
         case ESC_KEY_PRESSED:
             sortingState.stopSort();
             break;
