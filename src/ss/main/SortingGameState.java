@@ -1,11 +1,11 @@
 package ss.main;
 
-import java.awt.Graphics2D;
-
 import gt.component.ComponentCreator;
+import gt.gameentity.IGraphics;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
+import gt.util.EMath;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.ComplexityCounter;
 import ss.array.Memory;
@@ -19,13 +19,16 @@ import ss.interrupt.SortStopper;
 public class SortingGameState implements GameState {
     private static final int TITLE_HEIGHT = 60;
 
+    private final GameStateManager gameStateManager;
+
     private final SArray array;
     private final String algorithmName;
 
     private int width;
     private int height;
 
-    public SortingGameState(SortingAlgorithm algorithm, ArrayType arrayType, int arrayLength) {
+    public SortingGameState(GameStateManager gameStateManager, SortingAlgorithm algorithm, ArrayType arrayType, int arrayLength) {
+        this.gameStateManager = gameStateManager;
         Memory.clear();
         ComplexityCounter.reset();
         TimeManager.reset();
@@ -48,27 +51,27 @@ public class SortingGameState implements GameState {
     }
 
     @Override
-    public void drawOn(Graphics2D graphics) {
-        fillRect(graphics, 0, 0, width, height, ComponentCreator.backgroundColor());
+    public void drawOn(IGraphics g) {
+        g.fillRect(0, 0, width, height, ComponentCreator.backgroundColor());
 
         String accessTime = String.format("access:  %.3fms", Double.valueOf(SortingSimulator.getAccessTime()));
         String compareTime = String.format("compare: %.3fms", Double.valueOf(SortingSimulator.getCompareTime()));
         String insertTime = String.format("insert:  %.3fms", Double.valueOf(SortingSimulator.getInsertTime()));
-        graphics.setFont(SortingSimulator.SORT_FONT_SMALL);
-        graphics.setColor(SInteger.ACCESS_COLOR);
-        graphics.drawString(accessTime, 15, 15);
-        graphics.setColor(SInteger.COMPARE_COLOR);
-        graphics.drawString(compareTime, 15, 35);
-        graphics.setColor(SInteger.INSERT_COLOR);
-        graphics.drawString(insertTime, 15, 55);
+        g.setFont(SortingSimulator.SORT_FONT_SMALL);
+        g.setColor(SInteger.ACCESS_COLOR);
+        g.drawString(accessTime, 15, 15);
+        g.setColor(SInteger.COMPARE_COLOR);
+        g.drawString(compareTime, 15, 35);
+        g.setColor(SInteger.INSERT_COLOR);
+        g.drawString(insertTime, 15, 55);
 
-        graphics.setColor(SInteger.ELEMENT_COLOR);
-        drawCenteredString(graphics, SortingSimulator.SORT_FONT_LARGE, algorithmName, width / 2.0, TITLE_HEIGHT * .25);
+        g.setColor(SInteger.ELEMENT_COLOR);
+        g.drawCenteredString(algorithmName, width / 2.0, TITLE_HEIGHT * .25);
 
         String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
                 ComplexityCounter.getNumAccesses(), ComplexityCounter.getNumCompares(), ComplexityCounter.getNumInserts());
-        graphics.setColor(ComponentCreator.foregroundColor());
-        drawCenteredString(graphics, SortingSimulator.SORT_FONT_SMALL, subTitle, width / 2.0, TITLE_HEIGHT * .75);
+        g.setColor(ComponentCreator.foregroundColor());
+        g.drawCenteredString(subTitle, width / 2.0, TITLE_HEIGHT * .75);
 
         int[] colsAndRows = calculateColsAndRows();
         int colsToDraw = colsAndRows[0];
@@ -85,8 +88,8 @@ public class SortingGameState implements GameState {
                 SInteger element = row[i];
                 double elementHeight = element.value * elementUnitHeight;
                 double x0 = (i + columnNum) * elementWidth;
-                int actualElementWidth = round((i + columnNum + 1) * elementWidth) - round(x0);
-                fillRect(graphics, x0, y0 - elementHeight, actualElementWidth, elementHeight, element.getColor());
+                int actualElementWidth = EMath.round((i + columnNum + 1) * elementWidth) - EMath.round(x0);
+                g.fillRect(x0, y0 - elementHeight, actualElementWidth, elementHeight, element.getColor());
             }
 
             if (rowNum < Memory.numRows() - 1 && columnNum + row.length + Memory.getRow(rowNum + 1).length < colsToDraw) {
@@ -140,7 +143,7 @@ public class SortingGameState implements GameState {
             SortingSimulator.getSortThreadWorker().waitForStart();
             SortStopper.requestStop();
             TimeManager.requestStop();
-            GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
+            gameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
             break;
         }
     }

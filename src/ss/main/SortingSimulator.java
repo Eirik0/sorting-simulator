@@ -31,20 +31,20 @@ public class SortingSimulator {
     private SortingSimulator() {
     }
 
-    public static void createSortSelectionMenuState(List<SortingAlgorithm[]> algorithmsList) {
+    public static void createSortSelectionMenuState(GameStateManager gameStateManager, List<SortingAlgorithm[]> algorithmsList) {
         List<List<Pair<String, Runnable>>> menuActionsList = new ArrayList<>();
         for (SortingAlgorithm[] algorithms : algorithmsList) {
-            menuActionsList.add(createSortSelectionActions(algorithms));
+            menuActionsList.add(createSortSelectionActions(gameStateManager, algorithms));
         }
-        sortSelctionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_SMALL, 0, menuActionsList);
+        sortSelctionMenuState = new ScaledMenuState(gameStateManager.getMouseTracker(), SORT_FONT_SMALL, 0, menuActionsList);
     }
 
-    private static List<Pair<String, Runnable>> createSortSelectionActions(SortingAlgorithm[] algorithms) {
+    private static List<Pair<String, Runnable>> createSortSelectionActions(GameStateManager gameStateManager, SortingAlgorithm[] algorithms) {
         List<Pair<String, Runnable>> menuActions = new ArrayList<>();
         for (SortingAlgorithm algorithm : algorithms) {
             menuActions.add(Pair.valueOf(algorithm.getName(), () -> {
                 SortingSimulator.setSelectedAlgorithm(algorithm);
-                GameStateManager.setGameState(getSizeSelectionMenuState());
+                gameStateManager.setGameState(getSizeSelectionMenuState());
             }));
         }
         return menuActions;
@@ -54,7 +54,7 @@ public class SortingSimulator {
         return sortSelctionMenuState;
     }
 
-    public static void createSizeSelectionMenuState(int[] sizes) {
+    public static void createSizeSelectionMenuState(GameStateManager gameStateManager, int[] sizes) {
         List<Pair<String, ArrayType>> namedTypes = Arrays.asList(Pair.valueOf("Shuffled", ArrayType.SHUFFLED),
                 Pair.valueOf("In Order", ArrayType.IN_ORDER),
                 Pair.valueOf("Reversed", ArrayType.REVERSED),
@@ -65,13 +65,12 @@ public class SortingSimulator {
             menuActions.add(Pair.valueOf(namedType.getFirst(), () -> {
             }));
             for (int size : sizes) {
-                Runnable action = () -> GameStateManager
-                        .setGameState(new SortingGameState(SortingSimulator.getSelectedAlgorithm(), namedType.getSecond(), size));
-                menuActions.add(Pair.valueOf(Integer.toString(size), action));
+                menuActions.add(Pair.valueOf(Integer.toString(size), () -> gameStateManager.setGameState(
+                        new SortingGameState(gameStateManager, SortingSimulator.getSelectedAlgorithm(), namedType.getSecond(), size))));
             }
             menuActionsList.add(menuActions);
         }
-        sizeSelectionMenuState = new ScaledMenuState(GameStateManager.getMouseTracker(), SORT_FONT_LARGE, 0.1, menuActionsList);
+        sizeSelectionMenuState = new ScaledMenuState(gameStateManager.getMouseTracker(), SORT_FONT_LARGE, 0.1, menuActionsList);
     }
 
     public static GameState getSizeSelectionMenuState() {

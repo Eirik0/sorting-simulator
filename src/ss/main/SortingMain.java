@@ -84,14 +84,13 @@ public class SortingMain {
 
         GamePanel mainPanel = new GamePanel("Sort");
         mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
+        GameStateManager gameStateManager = mainPanel.getGameStateManager();
 
-        GameStateManager.setMainPanel(mainPanel);
-
-        SortingSimulator.createSortSelectionMenuState(
+        SortingSimulator.createSortSelectionMenuState(gameStateManager,
                 Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS, NON_COMPARISON_ALGORITHMS, CUSTOM_ALGORITHMS));
-        SortingSimulator.createSizeSelectionMenuState(ARRAY_SIZES);
+        SortingSimulator.createSizeSelectionMenuState(gameStateManager, ARRAY_SIZES);
 
-        GameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
+        gameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
 
         MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
 

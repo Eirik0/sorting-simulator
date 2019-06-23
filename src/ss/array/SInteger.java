@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import gt.gameentity.DrawingMethods;
 import gt.gameloop.TimeConstants;
+import gt.util.EMath;
 
 public class SInteger {
     private static final long FADE_TIME = TimeConstants.NANOS_PER_SECOND;
@@ -42,13 +43,13 @@ public class SInteger {
         double comparePercent = getColorPercent(timeNow, lastCompare);
         double insertPercent = getColorPercent(timeNow, lastInsert);
         if (accessPercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(ACCESS_COLOR, ELEMENT_COLOR, accessPercent);
+            colors[numColors++] = DrawingMethods.fadeToColor(ACCESS_COLOR, ELEMENT_COLOR, accessPercent);
         }
         if (comparePercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(COMPARE_COLOR, ELEMENT_COLOR, comparePercent);
+            colors[numColors++] = DrawingMethods.fadeToColor(COMPARE_COLOR, ELEMENT_COLOR, comparePercent);
         }
         if (insertPercent < 1) {
-            colors[numColors++] = DrawingMethods.fadeToColorS(INSERT_COLOR, ELEMENT_COLOR, insertPercent);
+            colors[numColors++] = DrawingMethods.fadeToColor(INSERT_COLOR, ELEMENT_COLOR, insertPercent);
         }
         if (numColors == 0) {
             return ELEMENT_COLOR;
@@ -72,7 +73,7 @@ public class SInteger {
             green += colors[i].getGreen();
             blue += colors[i].getBlue();
         }
-        return new Color(DrawingMethods.roundS(red / numColors), DrawingMethods.roundS(green / numColors), DrawingMethods.roundS(blue / numColors));
+        return new Color(EMath.round(red / numColors), EMath.round(green / numColors), EMath.round(blue / numColors));
     }
 
     @Override
