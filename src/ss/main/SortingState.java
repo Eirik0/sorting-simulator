@@ -1,53 +1,66 @@
 package ss.main;
 
 import gt.component.ComponentCreator;
+import gt.gameentity.Drawable;
 import gt.gameentity.IGraphics;
-import gt.gamestate.GameState;
-import gt.gamestate.GameStateManager;
-import gt.gamestate.UserInput;
+import gt.gameentity.Sizable;
+import gt.gameentity.Updatable;
 import gt.util.EMath;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.ComplexityCounter;
 import ss.array.Memory;
 import ss.array.SArray;
-import ss.array.SArray.ArrayType;
 import ss.array.SInteger;
 import ss.array.TimeManager;
 import ss.interrupt.SortStopException;
 import ss.interrupt.SortStopper;
 
-public class SortingGameState implements GameState {
+public class SortingState implements Updatable, Drawable, Sizable {
     private static final int TITLE_HEIGHT = 60;
 
-    private final GameStateManager gameStateManager;
-
-    private final SArray array;
-    private final String algorithmName;
+    private String algorithmName;
 
     private int width;
     private int height;
 
-    public SortingGameState(GameStateManager gameStateManager, SortingAlgorithm algorithm, ArrayType arrayType, int arrayLength) {
-        this.gameStateManager = gameStateManager;
-        Memory.clear();
-        ComplexityCounter.reset();
-        TimeManager.reset();
-        array = new SArray(arrayType, arrayLength);
+    private boolean started = false;
+
+    public SortingState(String algorithmName) {
+        this.algorithmName = algorithmName;
+    }
+
+    public synchronized void startSort(SArray array, SortingAlgorithm algorithm) {
+        stopSort();
         algorithmName = algorithm.getName();
+        started = true;
         SortingSimulator.getSortThreadWorker().workOn(() -> {
             try {
+                ComplexityCounter.reset();
+                TimeManager.reset();
                 SortStopper.sortStarted();
+                array.reallocateMemory();
                 algorithm.sort(array);
             } catch (SortStopException e) {
             } finally {
+                started = false;
                 array.searchStopped();
             }
         });
+        SortingSimulator.getSortThreadWorker().waitForStart();
+    }
+
+    public synchronized void stopSort() {
+        Memory.clear();
+        SortStopper.requestStop();
+        TimeManager.requestStop();
+        started = false;
     }
 
     @Override
     public void update(double dt) {
-        TimeManager.addTime(dt);
+        if (started) {
+            TimeManager.addTime(dt);
+        }
     }
 
     @Override
@@ -68,7 +81,7 @@ public class SortingGameState implements GameState {
         g.setColor(SInteger.ELEMENT_COLOR);
         g.drawCenteredString(algorithmName, width / 2.0, TITLE_HEIGHT * .25);
 
-        String subTitle = String.format("accesses:%5d    comparisons:%5d    inserts:%5d",
+        String subTitle = String.format("accesses:%5d    comparisons:%5d    insertions:%5d",
                 ComplexityCounter.getNumAccesses(), ComplexityCounter.getNumCompares(), ComplexityCounter.getNumInserts());
         g.setColor(ComponentCreator.foregroundColor());
         g.drawCenteredString(subTitle, width / 2.0, TITLE_HEIGHT * .75);
@@ -124,27 +137,5 @@ public class SortingGameState implements GameState {
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-    }
-
-    @Override
-    public void handleUserInput(UserInput input) {
-        switch (input) {
-        case MINUS_KEY_PRESSED:
-            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() * 1.25);
-            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() * 1.25);
-            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() * 1.25);
-            break;
-        case EQUALS_KEY_PRESSED:
-            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() / 1.25);
-            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() / 1.25);
-            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
-            break;
-        case ESC_KEY_PRESSED:
-            SortingSimulator.getSortThreadWorker().waitForStart();
-            SortStopper.requestStop();
-            TimeManager.requestStop();
-            gameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
-            break;
-        }
     }
 }

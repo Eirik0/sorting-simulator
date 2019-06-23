@@ -1,7 +1,6 @@
 package ss.main;
 
 import java.awt.Dimension;
-import java.util.Arrays;
 
 import gt.component.ComponentCreator;
 import gt.component.GamePanel;
@@ -77,23 +76,23 @@ public class SortingMain {
             new SelectionSortTwoMinimums()
     };
 
-    private static final int[] ARRAY_SIZES = new int[] { 25, 50, 100, 250, 500, 1000, 2500, 5000 };
-
     public static void main(String[] args) {
+        SortingSimulator.registerSorts(SLOW_SORTING_ALGORITHMS);
+        SortingSimulator.registerSorts(FAST_SORTING_ALGORITHMS);
+        SortingSimulator.registerSorts(SLOWEST_SORTING_ALGORITHMS);
+        SortingSimulator.registerSorts(NON_COMPARISON_ALGORITHMS);
+        SortingSimulator.registerSorts(CUSTOM_ALGORITHMS);
+        SortingSimulator.registerArrayTypes();
+
         ComponentCreator.setCrossPlatformLookAndFeel();
 
         GamePanel mainPanel = new GamePanel("Sort");
         mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
+
         GameStateManager gameStateManager = mainPanel.getGameStateManager();
-
-        SortingSimulator.createSortSelectionMenuState(gameStateManager,
-                Arrays.asList(SLOW_SORTING_ALGORITHMS, FAST_SORTING_ALGORITHMS, SLOWEST_SORTING_ALGORITHMS, NON_COMPARISON_ALGORITHMS, CUSTOM_ALGORITHMS));
-        SortingSimulator.createSizeSelectionMenuState(gameStateManager, ARRAY_SIZES);
-
-        gameStateManager.setGameState(SortingSimulator.getSortSelectionMenuState());
+        gameStateManager.setGameState(new SortingSimulationState(gameStateManager));
 
         MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
-
         mainFrame.show();
     }
 }

@@ -16,7 +16,7 @@ public class SArray {
 
     private static final Random RANDOM = new Random();
 
-    private final SInteger[] array;
+    private SInteger[] array;
 
     private final SoundPlayer player;
 
@@ -53,6 +53,12 @@ public class SArray {
             break;
         }
         player = new SoundPlayer(length);
+    }
+
+    public void reallocateMemory() {
+        SInteger[] temp = array;
+        array = Memory.allocate(array.length);
+        System.arraycopy(temp, 0, array, 0, array.length);
     }
 
     private void populateInOrder() {
