@@ -10,6 +10,7 @@ import gt.component.MainFrame;
 import gt.gamestate.GameStateManager;
 import gt.settings.GameSettings;
 import ss.algorithm.BinaryTreeSort;
+import ss.algorithm.BogoSort;
 import ss.algorithm.BubbleSort;
 import ss.algorithm.CocktailShakerSort;
 import ss.algorithm.CombSort;
@@ -65,6 +66,7 @@ public class SortingMain {
     };
 
     private static final SortingAlgorithm[] SLOWEST_SORTING_ALGORITHMS = new SortingAlgorithm[] {
+            new BogoSort(),
             new PancakeSort(),
             new StoogeSort()
     };
