@@ -2,6 +2,7 @@ package ss.main;
 
 import gt.component.ComponentCreator;
 import gt.ecomponent.EBackground;
+import gt.ecomponent.EComponentLocation;
 import gt.ecomponent.EComponentPanel;
 import gt.ecomponent.EComponentPanelBuilder;
 import gt.ecomponent.ETextLabel;
@@ -17,18 +18,22 @@ import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
 import gt.gamestate.UserInput;
+import gt.settings.DoubleSetting;
+import gt.settings.GameSettings;
 import gt.util.EMath;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.SArray;
 import ss.array.SArray.ArrayType;
 
 public class SortingSimulationState implements GameState {
+    private static final double UI_WIDTH_SCALE = GameSettings.getDouble("ss.uiscale.width", new DoubleSetting(Double.valueOf(1)));
+    private static final double UI_HEIGHT_SCALE = GameSettings.getDouble("ss.uiscale.height", new DoubleSetting(Double.valueOf(1)));
+
     private static final double PADDING = 5;
     private static final double PADDING_2 = 3 * PADDING;
-    private static final double COMBO_BOX_HEIGHT = 25;
+    private static final double CB_HEIGHT = 25;
     private static final double SELECTION_LABEL_WIDTH = 75;
-    private static final double UI_HEIGHT = 2 * COMBO_BOX_HEIGHT + 3 * PADDING;
-    private static final double TIME_SLIDER_HEIGHT = (UI_HEIGHT - 4 * PADDING) / 3;
+    private static final double TS_HEIGHT = (2 * CB_HEIGHT - PADDING) / 3;
 
     private final GameImageDrawer imageDrawer;
 
@@ -42,6 +47,7 @@ public class SortingSimulationState implements GameState {
     private ArrayType selectedType;
     private int selectedLength;
     private SArray array;
+    private double uiHeight;
 
     public SortingSimulationState(GameStateManager gameStateManager) {
         String[] allAlgorithms = SortingSimulator.getAlgorithmNames();
@@ -53,54 +59,49 @@ public class SortingSimulationState implements GameState {
 
         sortingState = new SortingState(selectedAlgorithm.getName());
         imageDrawer = gameStateManager.getImageDrawer();
-        sortingStateImage = imageDrawer.newGameImage(ComponentCreator.DEFAULT_WIDTH, EMath.round(ComponentCreator.DEFAULT_HEIGHT - UI_HEIGHT));
 
-        cpBackgroundLoc = new ESizableComponentLocation(0, 0, ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT - UI_HEIGHT);
+        EComponentLocation algorithmLabelLoc = EFixedLocation.fromRect(PADDING, PADDING, SELECTION_LABEL_WIDTH, CB_HEIGHT);
+        EComponentLocation algorithmCBLoc = EFixedLocation.fromRect(algorithmLabelLoc.getX1() + 1 + PADDING, PADDING, 200, CB_HEIGHT);
+        EComponentLocation arrayLabelLoc = EFixedLocation.fromRect(PADDING, algorithmLabelLoc.getY1() + 1 + PADDING, SELECTION_LABEL_WIDTH, CB_HEIGHT);
+        EComponentLocation arrayCBLoc = EFixedLocation.fromRect(arrayLabelLoc.getX1() + 1 + PADDING, algorithmLabelLoc.getY1() + 1 + PADDING, 100, CB_HEIGHT);
 
-        EFixedLocation algorithmLabelLoc = EFixedLocation.fromRect(PADDING, PADDING, SELECTION_LABEL_WIDTH, COMBO_BOX_HEIGHT);
-        EFixedLocation algorithmCBLoc = EFixedLocation.fromRect(algorithmLabelLoc.getX1() + 1 + PADDING, PADDING, 200, COMBO_BOX_HEIGHT);
-        EFixedLocation arrayLabelLoc = EFixedLocation.fromRect(PADDING, algorithmLabelLoc.getY1() + 1 + PADDING, SELECTION_LABEL_WIDTH, COMBO_BOX_HEIGHT);
-        EFixedLocation arrayCBLoc = EFixedLocation.fromRect(arrayLabelLoc.getX1() + 1 + PADDING, algorithmLabelLoc.getY1() + 1 + PADDING, 100,
-                COMBO_BOX_HEIGHT);
+        EComponentLocation sizeLabelLoc = EFixedLocation.fromRect(algorithmCBLoc.getX1() + 1 + PADDING_2, (CB_HEIGHT + 3 * PADDING) / 2, 50, CB_HEIGHT);
+        EComponentLocation sizeSliderLoc = EFixedLocation.fromRect(sizeLabelLoc.getX1() + 1 + PADDING_2, sizeLabelLoc.getY0(), 200, CB_HEIGHT);
+        EComponentLocation sliderAmountLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX0(), sizeSliderLoc.getY1() + 1 + PADDING, 200, TS_HEIGHT);
+        ETextLabel sliderAmountLabel = new ETextLabel(sliderAmountLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), Integer.toString(selectedLength), true);
 
-        EFixedLocation sizeLabelLoc = EFixedLocation.fromRect(algorithmCBLoc.getX1() + 1 + PADDING_2, (UI_HEIGHT - COMBO_BOX_HEIGHT) / 2, 50,
-                COMBO_BOX_HEIGHT);
-        EFixedLocation sizeSliderLoc = EFixedLocation.fromRect(sizeLabelLoc.getX1() + 1 + PADDING_2, sizeLabelLoc.getY0(), 200, COMBO_BOX_HEIGHT);
-        EFixedLocation sliderAmountLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX0(), sizeSliderLoc.getY1() + 1 + PADDING, 200, TIME_SLIDER_HEIGHT);
-        ETextLabel sliderAmountLabel = new ETextLabel(sliderAmountLabelLoc, Integer.toString(selectedLength), true);
+        EComponentLocation accLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, PADDING, 50, TS_HEIGHT);
+        EComponentLocation accSliderLoc = EFixedLocation.fromRect(accLabelLoc.getX1() + 1 + PADDING_2, PADDING, 150, TS_HEIGHT);
+        EComponentLocation comLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, accLabelLoc.getY1() + 1 + PADDING, 50, TS_HEIGHT);
+        EComponentLocation comSliderLoc = EFixedLocation.fromRect(accLabelLoc.getX1() + 1 + PADDING_2, accLabelLoc.getY1() + 1 + PADDING, 150, TS_HEIGHT);
+        EComponentLocation insLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, comSliderLoc.getY1() + 1 + PADDING, 50, TS_HEIGHT);
+        EComponentLocation insSliderLoc = EFixedLocation.fromRect(accLabelLoc.getX1() + 1 + PADDING_2, comSliderLoc.getY1() + 1 + PADDING, 150, TS_HEIGHT);
 
-        EFixedLocation accessLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, PADDING, 50, TIME_SLIDER_HEIGHT);
-        EFixedLocation accessSliderLoc = EFixedLocation.fromRect(accessLabelLoc.getX1() + 1 + PADDING_2, PADDING, 150, TIME_SLIDER_HEIGHT);
-        EFixedLocation compareLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, accessLabelLoc.getY1() + 1 + PADDING, 50,
-                TIME_SLIDER_HEIGHT);
-        EFixedLocation compareSliderLoc = EFixedLocation.fromRect(accessLabelLoc.getX1() + 1 + PADDING_2, accessLabelLoc.getY1() + 1 + PADDING, 150,
-                TIME_SLIDER_HEIGHT);
-        EFixedLocation insertLabelLoc = EFixedLocation.fromRect(sizeSliderLoc.getX1() + 1 + PADDING_2, compareSliderLoc.getY1() + 1 + PADDING, 50,
-                TIME_SLIDER_HEIGHT);
-        EFixedLocation insertSliderLoc = EFixedLocation.fromRect(accessLabelLoc.getX1() + 1 + PADDING_2, compareSliderLoc.getY1() + 1 + PADDING, 150,
-                TIME_SLIDER_HEIGHT);
+        EComponentLocation startButtonLoc = EFixedLocation.fromRect(accSliderLoc.getX1() + 1 + PADDING_2, PADDING, 50, TS_HEIGHT);
+        EComponentLocation stopButtonLoc = EFixedLocation.fromRect(accSliderLoc.getX1() + 1 + PADDING_2, startButtonLoc.getY1() + 1 + PADDING, 50, TS_HEIGHT);
+        EComponentLocation resetButtonLoc = EFixedLocation.fromRect(accSliderLoc.getX1() + 1 + PADDING_2, stopButtonLoc.getY1() + 1 + PADDING, 50, TS_HEIGHT);
 
-        EFixedLocation startButtonLoc = EFixedLocation.fromRect(accessSliderLoc.getX1() + 1 + PADDING_2, PADDING, 50, TIME_SLIDER_HEIGHT);
-        EFixedLocation stopButtonLoc = EFixedLocation.fromRect(accessSliderLoc.getX1() + 1 + PADDING_2, startButtonLoc.getY1() + 1 + PADDING, 50,
-                TIME_SLIDER_HEIGHT);
-        EFixedLocation resetButtonLoc = EFixedLocation.fromRect(accessSliderLoc.getX1() + 1 + PADDING_2, stopButtonLoc.getY1() + 1 + PADDING, 50,
-                TIME_SLIDER_HEIGHT);
+        uiHeight = resetButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE).getY1() + PADDING;
+
+        sortingStateImage = imageDrawer.newGameImage(ComponentCreator.DEFAULT_WIDTH, EMath.round(ComponentCreator.DEFAULT_HEIGHT - uiHeight));
+
+        cpBackgroundLoc = new ESizableComponentLocation(0, 0, ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT - uiHeight);
 
         componentPanel = new EComponentPanelBuilder(gameStateManager.getMouseTracker())
                 .add(0, new EBackground(cpBackgroundLoc, ComponentCreator.backgroundColor()))
-                .add(2, new ETextLabel(algorithmLabelLoc, "Algorithm:", true))
-                .add(2, new EComboBox(algorithmCBLoc, imageDrawer, allAlgorithms, 15, 0, i -> {
+                .add(2, new ETextLabel(algorithmLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Algorithm:", true))
+                .add(2, new EComboBox(algorithmCBLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), imageDrawer, allAlgorithms, 15, 0, i -> {
                     selectedAlgorithm = SortingSimulator.getAlgorithm(allAlgorithms[i]);
                     sortingState.stopSort();
                     array.reallocateMemory();
                 }))
-                .add(1, new ETextLabel(arrayLabelLoc, "Array Type:", true))
-                .add(1, new EComboBox(arrayCBLoc, imageDrawer, allArrayTypes, 5, 0, i -> {
+                .add(1, new ETextLabel(arrayLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Array Type:", true))
+                .add(1, new EComboBox(arrayCBLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), imageDrawer, allArrayTypes, 5, 0, i -> {
                     selectedType = SortingSimulator.getArrayType(allArrayTypes[i]);
                     resetState();
                 }))
-                .add(1, new ETextLabel(sizeLabelLoc, "Size:", true))
-                .add(2, new ESlider(sizeSliderLoc, 1, 5 * 4, 4, length -> {
+                .add(1, new ETextLabel(sizeLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Size:", true))
+                .add(2, new ESlider(sizeSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, 5 * 4, 4, length -> {
                     int pow = length / 4;
                     int mod = length % 4;
                     selectedLength = EMath.round(Math.pow(5, pow + 1) * (mod + 1));
@@ -111,26 +112,26 @@ public class SortingSimulationState implements GameState {
                     resetState();
                 }))
                 .add(1, sliderAmountLabel)
-                .add(1, new ETextLabel(accessLabelLoc, "Access:", true))
-                .add(1, new ESlider(accessSliderLoc, 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
+                .add(1, new ETextLabel(accLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Access:", true))
+                .add(1, new ESlider(accSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
                     SortingSimulator.setAccessTime(time / 1000.0);
                 }))
-                .add(1, new ETextLabel(compareLabelLoc, "Compare:", true))
-                .add(1, new ESlider(compareSliderLoc, 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
+                .add(1, new ETextLabel(comLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Compare:", true))
+                .add(1, new ESlider(comSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
                     SortingSimulator.setCompareTime(time / 1000.0);
                 }))
-                .add(1, new ETextLabel(insertLabelLoc, "Insert:", true))
-                .add(1, new ESlider(insertSliderLoc, 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
+                .add(1, new ETextLabel(insLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Insert:", true))
+                .add(1, new ESlider(insSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
                     SortingSimulator.setInsertTime(time / 1000.0);
                 }))
-                .add(1, EButton.createTextButton(startButtonLoc, "Start", () -> {
+                .add(1, EButton.createTextButton(startButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Start", () -> {
                     sortingState.startSort(array, selectedAlgorithm);
                 }))
-                .add(1, EButton.createTextButton(stopButtonLoc, "Stop", () -> {
+                .add(1, EButton.createTextButton(stopButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Stop", () -> {
                     sortingState.stopSort();
                     array.reallocateMemory();
                 }))
-                .add(1, EButton.createTextButton(resetButtonLoc, "Reset", () -> {
+                .add(1, EButton.createTextButton(resetButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Reset", () -> {
                     resetState();
                 }))
                 .build();
@@ -150,15 +151,15 @@ public class SortingSimulationState implements GameState {
     @Override
     public void drawOn(IGraphics g) {
         sortingState.drawOn(sortingStateImage.getGraphics());
-        imageDrawer.drawImage(g, sortingStateImage, 0, UI_HEIGHT);
+        imageDrawer.drawImage(g, sortingStateImage, 0, uiHeight);
         componentPanel.drawOn(g);
     }
 
     @Override
     public void setSize(int width, int height) {
-        sortingState.setSize(width, EMath.round(height - UI_HEIGHT));
-        sortingStateImage.setSize(width, EMath.round(height - UI_HEIGHT));
-        cpBackgroundLoc.setSize(width, EMath.round(UI_HEIGHT));
+        sortingState.setSize(width, EMath.round(height - uiHeight));
+        sortingStateImage.setSize(width, EMath.round(height - uiHeight));
+        cpBackgroundLoc.setSize(width, EMath.round(uiHeight));
     }
 
     @Override

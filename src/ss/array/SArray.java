@@ -18,7 +18,7 @@ public class SArray {
 
     private SInteger[] array;
 
-    private final SoundPlayer player;
+    private SoundPlayer player;
 
     public SArray(ArrayType type, int length) {
         array = Memory.allocate(length);
@@ -59,6 +59,9 @@ public class SArray {
         SInteger[] temp = array;
         array = Memory.allocate(array.length);
         System.arraycopy(temp, 0, array, 0, array.length);
+        if (player.isStopped()) {
+            player = new SoundPlayer(array.length);
+        }
     }
 
     private void populateInOrder() {

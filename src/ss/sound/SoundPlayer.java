@@ -102,6 +102,11 @@ public class SoundPlayer {
             sdl.drain();
             sdl.close();
         }
+        sdl = null;
+    }
+
+    public boolean isStopped() {
+        return sdl == null;
     }
 
     private static class FrequencyAndDuration {
