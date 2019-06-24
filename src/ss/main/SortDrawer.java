@@ -9,19 +9,13 @@ import ss.array.ComplexityCounter;
 import ss.array.Memory;
 import ss.array.SInteger;
 
-public class SortingState implements Drawable, Sizable {
+public class SortDrawer implements Drawable, Sizable {
     private static final int TITLE_HEIGHT = 60;
-
-    private String algorithmName = "";
 
     private int width;
     private int height;
 
-    public SortingState() {
-    }
-
-    public void setAlgorithmName(String algorithmName) {
-        this.algorithmName = algorithmName;
+    public SortDrawer() {
     }
 
     @Override
@@ -40,7 +34,7 @@ public class SortingState implements Drawable, Sizable {
         g.drawString(insertTime, 15, 55);
 
         g.setColor(SInteger.ELEMENT_COLOR);
-        g.drawCenteredString(algorithmName, width / 2.0, TITLE_HEIGHT * .25);
+        g.drawCenteredString(SortingSimulator.getCurrentAlgorithmName(), width / 2.0, TITLE_HEIGHT * .25);
 
         String subTitle = String.format("accesses:%5d    comparisons:%5d    insertions:%5d",
                 ComplexityCounter.getNumAccesses(), ComplexityCounter.getNumCompares(), ComplexityCounter.getNumInserts());

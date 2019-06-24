@@ -23,6 +23,8 @@ public class SortingSimulator {
     private static double insertTime = 10;
     private static double compareTime = 10;
 
+    private static String algorithmName = "";
+
     private static final ThreadWorker sortThreadWorker = new ThreadWorker();
     private static final SoundPlayer soundPlayer = new SoundPlayer();
 
@@ -72,6 +74,7 @@ public class SortingSimulator {
         stopSort(true);
         sortThreadWorker.workOn(() -> {
             try {
+                algorithmName = algorithm.getName();
                 ComplexityCounter.reset();
                 TimeManager.reset();
                 SortStopper.sortStarted();
@@ -110,5 +113,9 @@ public class SortingSimulator {
 
     public static void playSound(double[] ns, int numElements, double desiredDuration) {
         soundPlayer.play(ns, numElements, desiredDuration);
+    }
+
+    public static String getCurrentAlgorithmName() {
+        return algorithmName;
     }
 }

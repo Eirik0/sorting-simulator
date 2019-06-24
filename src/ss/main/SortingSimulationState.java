@@ -39,7 +39,7 @@ public class SortingSimulationState implements GameState {
 
     private final GameImageDrawer imageDrawer;
 
-    private final SortingState sortingState;
+    private final SortDrawer sortingState;
     private final IGameImage sortingStateImage;
 
     private final ESizableComponentLocation cpBackgroundLoc;
@@ -59,8 +59,7 @@ public class SortingSimulationState implements GameState {
         selectedLength = 25;
         array = new SArray(selectedType, selectedLength);
 
-        sortingState = new SortingState();
-        sortingState.setAlgorithmName(selectedAlgorithm.getName());
+        sortingState = new SortDrawer();
         imageDrawer = gameStateManager.getImageDrawer();
 
         EComponentLocation algorithmLabelLoc = EFixedLocation.fromRect(PADDING, PADDING, SELECTION_LABEL_WIDTH, CB_HEIGHT);
@@ -129,7 +128,6 @@ public class SortingSimulationState implements GameState {
                     SortingSimulator.setInsertTime(time / 1000.0);
                 }))
                 .add(1, EButton.createTextButton(startButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Start", () -> {
-                    sortingState.setAlgorithmName(selectedAlgorithm.getName());
                     SortingSimulator.startSort(array, selectedAlgorithm);
                 }))
                 .add(1, EButton.createTextButton(stopButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Stop", () -> {
