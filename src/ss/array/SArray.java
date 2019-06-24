@@ -3,7 +3,6 @@ package ss.array;
 import java.util.Random;
 
 import ss.main.SortingSimulator;
-import ss.sound.SoundPlayer;
 
 public class SArray {
     public enum ArrayType {
@@ -17,8 +16,6 @@ public class SArray {
     private static final Random RANDOM = new Random();
 
     private SInteger[] array;
-
-    private SoundPlayer player;
 
     public SArray(ArrayType type, int length) {
         array = Memory.allocate(length);
@@ -52,16 +49,12 @@ public class SArray {
             shuffle();
             break;
         }
-        player = new SoundPlayer(length);
     }
 
     public void reallocateMemory() {
         SInteger[] temp = array;
         array = Memory.allocate(array.length);
         System.arraycopy(temp, 0, array, 0, array.length);
-        if (player.isStopped()) {
-            player = new SoundPlayer(array.length);
-        }
     }
 
     private void populateInOrder() {
@@ -85,7 +78,7 @@ public class SArray {
 
     public SInteger get(int i) {
         SInteger element = array[i];
-        player.play(element.value, SortingSimulator.getAccessTime());
+        SortingSimulator.playSound(element.value, array.length, SortingSimulator.getAccessTime());
         TimeManager.waitForTime(SortingSimulator.getAccessTime());
         ComplexityCounter.incrementAccesses();
         element.lastAccess = System.nanoTime();
@@ -97,7 +90,7 @@ public class SArray {
     }
 
     public void set(int i, SInteger element) {
-        player.play(element.value, SortingSimulator.getInsertTime());
+        SortingSimulator.playSound(element.value, array.length, SortingSimulator.getInsertTime());
         TimeManager.waitForTime(SortingSimulator.getInsertTime());
         ComplexityCounter.incrementInserts();
         element.lastInsert = System.nanoTime();
@@ -105,15 +98,11 @@ public class SArray {
     }
 
     public int compare(SInteger e1, SInteger e2) {
-        player.play((e1.value + e2.value) / 2, SortingSimulator.getCompareTime());
+        SortingSimulator.playSound((e1.value + e2.value) / 2.0, array.length, SortingSimulator.getCompareTime());
         TimeManager.waitForTime(SortingSimulator.getCompareTime());
         ComplexityCounter.incrementCompares();
         e1.lastCompare = System.nanoTime();
         e2.lastCompare = System.nanoTime();
         return Integer.compare(e1.value, e2.value);
-    }
-
-    public synchronized void searchStopped() {
-        player.stop();
     }
 }

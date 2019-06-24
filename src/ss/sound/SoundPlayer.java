@@ -24,9 +24,7 @@ public class SoundPlayer {
 
     private SourceDataLine sdl = null;
 
-    private final double hzPerUnit;
-
-    public SoundPlayer(int numElements) {
+    public SoundPlayer() {
         AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, false);
         try {
             sdl = AudioSystem.getSourceDataLine(af);
@@ -36,7 +34,6 @@ public class SoundPlayer {
             closeSDL();
             throw new RuntimeException(e);
         }
-        hzPerUnit = (MAX_FREQ - MIN_FREQ) / numElements;
         soundThreadWorker.workOn(() -> {
             while (keepPlaying) {
                 while (playQueue.peek() == null && keepPlaying) {
@@ -65,8 +62,8 @@ public class SoundPlayer {
         soundThreadWorker.waitForStart();
     }
 
-    public synchronized void play(int n, double desiredDuration) {
-        playQueue.add(new FrequencyAndDuration(n * hzPerUnit, Math.max(desiredDuration, 10)));
+    public synchronized void play(double n, int numElements, double desiredDuration) {
+        playQueue.add(new FrequencyAndDuration(n * (MAX_FREQ - MIN_FREQ) / numElements, Math.max(desiredDuration, 10)));
         notify();
     }
 
@@ -103,10 +100,6 @@ public class SoundPlayer {
             sdl.close();
         }
         sdl = null;
-    }
-
-    public boolean isStopped() {
-        return sdl == null;
     }
 
     private static class FrequencyAndDuration {

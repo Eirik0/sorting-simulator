@@ -7,6 +7,7 @@ import java.util.Map;
 import gt.async.ThreadWorker;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.SArray.ArrayType;
+import ss.sound.SoundPlayer;
 
 public class SortingSimulator {
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
@@ -17,6 +18,7 @@ public class SortingSimulator {
     private static double compareTime = 10;
 
     private static final ThreadWorker sortThreadWorker = new ThreadWorker();
+    private static final SoundPlayer soundPlayer = new SoundPlayer();
 
     private static final Map<String, SortingAlgorithm> sortingAlgorithmMap = new LinkedHashMap<>();
     private static final Map<String, ArrayType> arrayTypeMap = new LinkedHashMap<>();
@@ -79,5 +81,9 @@ public class SortingSimulator {
 
     public static void setCompareTime(double time) {
         compareTime = time;
+    }
+
+    public static void playSound(double n, int numElements, double desiredDuration) {
+        soundPlayer.play(n, numElements, desiredDuration);
     }
 }

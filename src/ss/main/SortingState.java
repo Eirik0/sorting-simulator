@@ -43,7 +43,6 @@ public class SortingState implements Updatable, Drawable, Sizable {
             } catch (SortStopException e) {
             } finally {
                 started = false;
-                array.searchStopped();
             }
         });
         SortingSimulator.getSortThreadWorker().waitForStart();
