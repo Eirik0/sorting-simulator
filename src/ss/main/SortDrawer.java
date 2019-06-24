@@ -54,7 +54,7 @@ public class SortDrawer implements Drawable, Sizable {
             SInteger[] row = Memory.getRow(rowNum);
             for (int i = 0; i < row.length; ++i) {
                 SInteger element = row[i];
-                double elementHeight = element.value * elementUnitHeight;
+                int elementHeight = EMath.round(element.value * elementUnitHeight);
                 double x0 = (i + columnNum) * elementWidth;
                 int actualElementWidth = EMath.round((i + columnNum + 1) * elementWidth) - EMath.round(x0);
                 g.fillRect(x0, y0 - elementHeight, actualElementWidth, elementHeight, element.getColor());
