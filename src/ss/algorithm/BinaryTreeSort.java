@@ -56,7 +56,7 @@ public class BinaryTreeSort implements SortingAlgorithm {
                     rootIndex = childIndex;
                 }
             }
-            elements.copy(position++, element);
+            elements.set(position++, element);
         }
 
         void fill(SArray array) {
@@ -68,7 +68,7 @@ public class BinaryTreeSort implements SortingAlgorithm {
             if (leftChildIndex != NULL_VALUE) {
                 setIndex = fill(array, leftChildIndex, setIndex);
             }
-            array.copy(setIndex++, elements.get(getIndex));
+            array.set(setIndex++, elements.get(getIndex));
             int rightChildIndex = rightChildIndexes.get(getIndex).value;
             if (rightChildIndex != NULL_VALUE) {
                 setIndex = fill(array, rightChildIndex, setIndex);

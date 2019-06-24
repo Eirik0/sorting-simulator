@@ -25,7 +25,7 @@ public class MergeSortBottomUp implements SortingAlgorithm {
         }
         if (array != arrayPtr) {
             for (int i = 0; i < array.length(); ++i) {
-                workingArray.copy(i, array.get(i));
+                workingArray.set(i, array.get(i));
             }
         }
     }

@@ -96,7 +96,7 @@ public class RadixSortMSDBase16 implements SortingAlgorithm {
                 }
             }
             bucketEnds.set(bucket, new SInteger(position));
-            values.copy(position++, element);
+            values.set(position++, element);
         }
 
         void copyInto(SArray array, int startIndex) {
@@ -105,7 +105,7 @@ public class RadixSortMSDBase16 implements SortingAlgorithm {
                 int nextElementIndex = bucketStarts.get(i).value;
                 if (nextElementIndex != -1) {
                     do {
-                        array.copy(startIndex + arrayIndex++, values.get(nextElementIndex));
+                        array.set(startIndex + arrayIndex++, values.get(nextElementIndex));
                         nextElementIndex = nextElementIndexes.get(nextElementIndex).value;
                     } while (nextElementIndex != 0);
                 }

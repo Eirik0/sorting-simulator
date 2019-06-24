@@ -79,11 +79,11 @@ public class SArray {
         return element;
     }
 
-    public void copy(int i, SInteger element) {
-        set(i, element.copy());
+    public void set(int i, SInteger element) {
+        setCopy(i, element.copy());
     }
 
-    public void set(int i, SInteger element) {
+    private void setCopy(int i, SInteger element) {
         TimeManager.waitForTime(SortingSimulator.getInsertTime());
         SortingSimulator.playSound(new double[] { element.value }, array.length, SortingSimulator.getInsertTime());
         ComplexityCounter.incrementInserts();

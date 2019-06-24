@@ -35,7 +35,7 @@ public class SInteger {
     }
 
     public SInteger copy() {
-        return new SInteger(value, 0, 0, 0);
+        return new SInteger(value, lastAccess, lastCompare, lastInsert);
     }
 
     public Color getColor() {

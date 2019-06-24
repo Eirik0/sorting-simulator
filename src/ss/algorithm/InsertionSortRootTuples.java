@@ -27,7 +27,7 @@ public class InsertionSortRootTuples implements SortingAlgorithm {
         while (startIndex < length) {
             int numToInsert = 0;
             for (; numToInsert < sqrtLen && startIndex + numToInsert < length; ++numToInsert) {
-                workingArray.copy(numToInsert, array.get(startIndex + numToInsert));
+                workingArray.set(numToInsert, array.get(startIndex + numToInsert));
             }
             insertionSort(workingArray, numToInsert);
             int i = startIndex;
@@ -40,7 +40,7 @@ public class InsertionSortRootTuples implements SortingAlgorithm {
                     }
                     array.set(i + numToInsert, element);
                 }
-                array.copy(i + numToInsert, toInsert);
+                array.set(i + numToInsert, toInsert);
                 ++startIndex;
             } while (numToInsert > 0);
         }

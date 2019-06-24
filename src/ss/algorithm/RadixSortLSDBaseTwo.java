@@ -20,9 +20,9 @@ public class RadixSortLSDBaseTwo implements SortingAlgorithm {
             for (int i = 0; i < array.length(); ++i) {
                 SInteger element = array.get(i);
                 if ((element.value & mask) == 0) {
-                    workingArray.copy(zeroIndex++, element);
+                    workingArray.set(zeroIndex++, element);
                 } else {
-                    workingArray.copy(oneIndex--, element);
+                    workingArray.set(oneIndex--, element);
                 }
             }
             if (oneIndex == array.length() - 1) {
@@ -30,11 +30,11 @@ public class RadixSortLSDBaseTwo implements SortingAlgorithm {
             }
             int i = 0;
             for (; i < zeroIndex; ++i) {
-                array.copy(i, workingArray.get(i));
+                array.set(i, workingArray.get(i));
             }
             int copyFromIndex = array.length() - 1;
             for (; i < array.length(); ++i) {
-                array.copy(i, workingArray.get(copyFromIndex--));
+                array.set(i, workingArray.get(copyFromIndex--));
             }
             mask <<= 1;
         }
