@@ -6,7 +6,13 @@ import java.util.Map;
 
 import gt.async.ThreadWorker;
 import ss.algorithm.SortingAlgorithm;
+import ss.array.ComplexityCounter;
+import ss.array.Memory;
+import ss.array.SArray;
 import ss.array.SArray.ArrayType;
+import ss.array.TimeManager;
+import ss.interrupt.SortStopException;
+import ss.interrupt.SortStopper;
 import ss.sound.SoundPlayer;
 
 public class SortingSimulator {
@@ -55,8 +61,27 @@ public class SortingSimulator {
         return arrayTypeMap.get(name);
     }
 
-    public static ThreadWorker getSortThreadWorker() {
-        return sortThreadWorker;
+    public static void stopSort(boolean keepFirst) {
+        SortStopper.requestStop();
+        TimeManager.requestStop();
+        SortStopper.waitForStop();
+        Memory.clear(keepFirst);
+    }
+
+    public static void startSort(SArray array, SortingAlgorithm algorithm) {
+        stopSort(true);
+        sortThreadWorker.workOn(() -> {
+            try {
+                ComplexityCounter.reset();
+                TimeManager.reset();
+                SortStopper.sortStarted();
+                algorithm.sort(array);
+            } catch (SortStopException e) {
+            } finally {
+                SortStopper.sortStopped();
+            }
+        });
+        sortThreadWorker.waitForStart();
     }
 
     public static double getAccessTime() {

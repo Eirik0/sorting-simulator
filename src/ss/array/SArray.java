@@ -15,7 +15,7 @@ public class SArray {
 
     private static final Random RANDOM = new Random();
 
-    private SInteger[] array;
+    private final SInteger[] array;
 
     public SArray(ArrayType type, int length) {
         array = Memory.allocate(length);
@@ -49,12 +49,6 @@ public class SArray {
             shuffle();
             break;
         }
-    }
-
-    public void reallocateMemory() {
-        SInteger[] temp = array;
-        array = Memory.allocate(array.length);
-        System.arraycopy(temp, 0, array, 0, array.length);
     }
 
     private void populateInOrder() {

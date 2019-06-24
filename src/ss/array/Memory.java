@@ -29,9 +29,14 @@ public class Memory {
         instance.allocatedMemory.remove(rowIndex);
     }
 
-    public static synchronized void clear() {
+    public static synchronized void clear(boolean keepFirst) {
+        SInteger[] first = instance.allocatedMemory.get(0);
         instance.allocatedMemory.clear();
         instance.numRows = 0;
+        if (keepFirst) {
+            instance.allocatedMemory.add(first);
+            instance.numRows = 1;
+        }
     }
 
     public static synchronized int numRows() {

@@ -4,62 +4,24 @@ import gt.component.ComponentCreator;
 import gt.gameentity.Drawable;
 import gt.gameentity.IGraphics;
 import gt.gameentity.Sizable;
-import gt.gameentity.Updatable;
 import gt.util.EMath;
-import ss.algorithm.SortingAlgorithm;
 import ss.array.ComplexityCounter;
 import ss.array.Memory;
-import ss.array.SArray;
 import ss.array.SInteger;
-import ss.array.TimeManager;
-import ss.interrupt.SortStopException;
-import ss.interrupt.SortStopper;
 
-public class SortingState implements Updatable, Drawable, Sizable {
+public class SortingState implements Drawable, Sizable {
     private static final int TITLE_HEIGHT = 60;
 
-    private String algorithmName;
+    private String algorithmName = "";
 
     private int width;
     private int height;
 
-    private boolean started = false;
+    public SortingState() {
+    }
 
-    public SortingState(String algorithmName) {
+    public void setAlgorithmName(String algorithmName) {
         this.algorithmName = algorithmName;
-    }
-
-    public synchronized void startSort(SArray array, SortingAlgorithm algorithm) {
-        stopSort();
-        algorithmName = algorithm.getName();
-        started = true;
-        SortingSimulator.getSortThreadWorker().workOn(() -> {
-            try {
-                ComplexityCounter.reset();
-                TimeManager.reset();
-                SortStopper.sortStarted();
-                array.reallocateMemory();
-                algorithm.sort(array);
-            } catch (SortStopException e) {
-            } finally {
-                started = false;
-            }
-        });
-        SortingSimulator.getSortThreadWorker().waitForStart();
-    }
-
-    public synchronized void stopSort() {
-        Memory.clear();
-        SortStopper.requestStop();
-        TimeManager.requestStop();
-        started = false;
-    }
-
-    @Override
-    public void update(double dt) {
-        if (started) {
-            TimeManager.addTime(dt);
-        }
     }
 
     @Override

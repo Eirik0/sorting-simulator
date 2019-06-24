@@ -24,6 +24,8 @@ import gt.util.EMath;
 import ss.algorithm.SortingAlgorithm;
 import ss.array.SArray;
 import ss.array.SArray.ArrayType;
+import ss.array.TimeManager;
+import ss.interrupt.SortStopper;
 
 public class SortingSimulationState implements GameState {
     private static final double UI_WIDTH_SCALE = GameSettings.getDouble("ss.uiscale.width", new DoubleSetting(Double.valueOf(1)));
@@ -57,7 +59,8 @@ public class SortingSimulationState implements GameState {
         selectedLength = 25;
         array = new SArray(selectedType, selectedLength);
 
-        sortingState = new SortingState(selectedAlgorithm.getName());
+        sortingState = new SortingState();
+        sortingState.setAlgorithmName(selectedAlgorithm.getName());
         imageDrawer = gameStateManager.getImageDrawer();
 
         EComponentLocation algorithmLabelLoc = EFixedLocation.fromRect(PADDING, PADDING, SELECTION_LABEL_WIDTH, CB_HEIGHT);
@@ -92,13 +95,13 @@ public class SortingSimulationState implements GameState {
                 .add(2, new ETextLabel(algorithmLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Algorithm:", true))
                 .add(2, new EComboBox(algorithmCBLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), imageDrawer, allAlgorithms, 15, 0, i -> {
                     selectedAlgorithm = SortingSimulator.getAlgorithm(allAlgorithms[i]);
-                    sortingState.stopSort();
-                    array.reallocateMemory();
+                    SortingSimulator.stopSort(true);
                 }))
                 .add(1, new ETextLabel(arrayLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Array Type:", true))
                 .add(1, new EComboBox(arrayCBLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), imageDrawer, allArrayTypes, 5, 0, i -> {
                     selectedType = SortingSimulator.getArrayType(allArrayTypes[i]);
-                    resetState();
+                    SortingSimulator.stopSort(false);
+                    array = new SArray(selectedType, selectedLength);
                 }))
                 .add(1, new ETextLabel(sizeLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Size:", true))
                 .add(2, new ESlider(sizeSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, 5 * 4, 4, length -> {
@@ -109,7 +112,8 @@ public class SortingSimulationState implements GameState {
                         return;
                     }
                     sliderAmountLabel.setText(Integer.toString(selectedLength));
-                    resetState();
+                    SortingSimulator.stopSort(false);
+                    array = new SArray(selectedType, selectedLength);
                 }))
                 .add(1, sliderAmountLabel)
                 .add(1, new ETextLabel(accLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Access:", true))
@@ -125,27 +129,25 @@ public class SortingSimulationState implements GameState {
                     SortingSimulator.setInsertTime(time / 1000.0);
                 }))
                 .add(1, EButton.createTextButton(startButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Start", () -> {
-                    sortingState.startSort(array, selectedAlgorithm);
+                    sortingState.setAlgorithmName(selectedAlgorithm.getName());
+                    SortingSimulator.startSort(array, selectedAlgorithm);
                 }))
                 .add(1, EButton.createTextButton(stopButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Stop", () -> {
-                    sortingState.stopSort();
-                    array.reallocateMemory();
+                    SortingSimulator.stopSort(true);
                 }))
                 .add(1, EButton.createTextButton(resetButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Reset", () -> {
-                    resetState();
+                    SortingSimulator.stopSort(false);
+                    array = new SArray(selectedType, selectedLength);
                 }))
                 .build();
-    }
-
-    private void resetState() {
-        sortingState.stopSort();
-        array = new SArray(selectedType, selectedLength);
     }
 
     @Override
     public void update(double dt) {
         componentPanel.update(dt);
-        sortingState.update(dt);
+        if (SortStopper.isSorting()) {
+            TimeManager.addTime(dt);
+        }
     }
 
     @Override
@@ -182,7 +184,7 @@ public class SortingSimulationState implements GameState {
             SortingSimulator.setCompareTime(10);
             break;
         case ESC_KEY_PRESSED:
-            sortingState.stopSort();
+            SortingSimulator.stopSort(true);
             break;
         }
     }
