@@ -1,5 +1,7 @@
 package ss.sound;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -45,35 +47,44 @@ public class SoundPlayer {
                         throw new RuntimeException(e);
                     }
                 }
-                double frequency = 0;
-                double duration = 0;
-                int n = 0;
+                List<FrequencyAndDuration> hzList = new ArrayList<>();
                 FrequencyAndDuration fd;
                 while ((fd = playQueue.poll()) != null) {
-                    frequency += fd.frequency;
-                    duration = Math.max(duration, fd.duration);
-                    ++n;
+                    hzList.add(fd);
                 }
-                if (n > 0) {
-                    playInternal(frequency / n, duration);
+                if (keepPlaying && hzList.size() > 0) {
+                    playInternal(hzList);
                 }
             }
         });
         soundThreadWorker.waitForStart();
     }
 
-    public synchronized void play(double n, int numElements, double desiredDuration) {
-        playQueue.add(new FrequencyAndDuration(n * (MAX_FREQ - MIN_FREQ) / numElements, Math.max(desiredDuration, 10)));
+    public synchronized void play(double[] ns, int numElements, double desiredDuration) {
+        for (double n : ns) {
+            playQueue.add(new FrequencyAndDuration(n * (MAX_FREQ - MIN_FREQ) / numElements, Math.max(desiredDuration, 10)));
+        }
         notify();
     }
 
-    public void playInternal(double hz, double duration) {
+    public void playInternal(List<FrequencyAndDuration> fds) {
+        int numFds = fds.size();
+        double duration = 0;
+        for (FrequencyAndDuration fd : fds) {
+            duration = Math.max(duration, fd.duration);
+        }
         int numSamples = (int) Math.round(SAMPLE_RATE * duration / 1000);
 
+        double[] dSinWave = new double[numSamples];
+        for (FrequencyAndDuration fd : fds) {
+            for (int i = 0; i < numSamples; ++i) {
+                double angle = 2 * Math.PI * i * (fd.frequency / SAMPLE_RATE);
+                dSinWave[i] += Math.sin(angle);
+            }
+        }
         byte[] sinWave = new byte[numSamples];
         for (int i = 0; i < numSamples; ++i) {
-            double angle = 2 * Math.PI * i * (hz / SAMPLE_RATE);
-            sinWave[i] = (byte) Math.round(Math.sin(angle) * 127 * VOLUME);
+            sinWave[i] = (byte) Math.round(dSinWave[i] * 127 * VOLUME / numFds);
         }
 
         for (int i = 0; i < NUM_FADE_SAMPLES && i < sinWave.length / 2; i++) {

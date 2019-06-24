@@ -108,7 +108,7 @@ public class SortingSimulator {
         compareTime = time;
     }
 
-    public static void playSound(double n, int numElements, double desiredDuration) {
-        soundPlayer.play(n, numElements, desiredDuration);
+    public static void playSound(double[] ns, int numElements, double desiredDuration) {
+        soundPlayer.play(ns, numElements, desiredDuration);
     }
 }
