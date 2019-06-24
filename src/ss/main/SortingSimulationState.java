@@ -50,6 +50,9 @@ public class SortingSimulationState implements GameState {
     private int selectedLength;
     private SArray array;
     private double uiHeight;
+    private ESlider accessTimeSlider;
+    private ESlider compareTimeSlider;
+    private ESlider insertTimeSlider;
 
     public SortingSimulationState(GameStateManager gameStateManager) {
         String[] allAlgorithms = SortingSimulator.getAlgorithmNames();
@@ -89,6 +92,13 @@ public class SortingSimulationState implements GameState {
 
         cpBackgroundLoc = new ESizableComponentLocation(0, 0, ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT - uiHeight);
 
+        accessTimeSlider = new ESlider(accSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000,
+                time -> SortingSimulator.setAccessTime(time / 1000.0));
+        compareTimeSlider = new ESlider(comSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000,
+                time -> SortingSimulator.setCompareTime(time / 1000.0));
+        insertTimeSlider = new ESlider(insSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000,
+                time -> SortingSimulator.setInsertTime(time / 1000.0));
+
         componentPanel = new EComponentPanelBuilder(gameStateManager.getMouseTracker())
                 .add(0, new EBackground(cpBackgroundLoc, ComponentCreator.backgroundColor()))
                 .add(2, new ETextLabel(algorithmLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Algorithm:", true))
@@ -116,17 +126,11 @@ public class SortingSimulationState implements GameState {
                 }))
                 .add(1, sliderAmountLabel)
                 .add(1, new ETextLabel(accLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Access:", true))
-                .add(1, new ESlider(accSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
-                    SortingSimulator.setAccessTime(time / 1000.0);
-                }))
+                .add(1, accessTimeSlider)
                 .add(1, new ETextLabel(comLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Compare:", true))
-                .add(1, new ESlider(comSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
-                    SortingSimulator.setCompareTime(time / 1000.0);
-                }))
+                .add(1, compareTimeSlider)
                 .add(1, new ETextLabel(insLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Insert:", true))
-                .add(1, new ESlider(insSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000, time -> {
-                    SortingSimulator.setInsertTime(time / 1000.0);
-                }))
+                .add(1, insertTimeSlider)
                 .add(1, EButton.createTextButton(startButtonLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Start", () -> {
                     SortingSimulator.startSort(array, selectedAlgorithm);
                 }))
@@ -170,16 +174,19 @@ public class SortingSimulationState implements GameState {
             SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() * 1.25);
             SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() * 1.25);
             SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() * 1.25);
+            setSliderValues();
             break;
         case EQUALS_KEY_PRESSED:
             SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() / 1.25);
             SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() / 1.25);
             SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
+            setSliderValues();
             break;
         case R_KEY_PRESSED:
             SortingSimulator.setAccessTime(10);
             SortingSimulator.setInsertTime(10);
             SortingSimulator.setCompareTime(10);
+            setSliderValues();
             break;
         case SPACE_KEY_PRESSED:
             SortingSimulator.startSort(array, selectedAlgorithm);
@@ -188,5 +195,11 @@ public class SortingSimulationState implements GameState {
             SortingSimulator.stopSort(true);
             break;
         }
+    }
+
+    private void setSliderValues() {
+        accessTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getAccessTime() * 1000));
+        insertTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getInsertTime() * 1000));
+        compareTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getCompareTime() * 1000));
     }
 }
