@@ -67,11 +67,13 @@ public class SortingSimulator {
         SortStopper.requestStop();
         TimeManager.requestStop();
         SortStopper.waitForStop();
+        soundPlayer.stop();
         Memory.clear(keepFirst);
     }
 
     public static void startSort(SArray array, SortingAlgorithm algorithm) {
         stopSort(true);
+        soundPlayer.start();
         sortThreadWorker.workOn(() -> {
             try {
                 algorithmName = algorithm.getName();

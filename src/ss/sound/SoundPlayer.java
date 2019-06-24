@@ -37,7 +37,7 @@ public class SoundPlayer {
             throw new RuntimeException(e);
         }
         soundThreadWorker.workOn(() -> {
-            while (keepPlaying) {
+            for (;;) {
                 while (playQueue.peek() == null && keepPlaying) {
                     try {
                         synchronized (this) {
@@ -96,13 +96,17 @@ public class SoundPlayer {
         sdl.write(sinWave, 0, sinWave.length);
     }
 
+    public void start() {
+        keepPlaying = true;
+    }
+
     public void stop() {
         synchronized (this) {
             keepPlaying = false;
             notify();
         }
-        soundThreadWorker.joinThread();
-        closeSDL();
+        playQueue.clear();
+        sdl.flush();
     }
 
     private void closeSDL() {
