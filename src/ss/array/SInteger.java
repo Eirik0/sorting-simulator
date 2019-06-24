@@ -4,15 +4,18 @@ import java.awt.Color;
 
 import gt.gameentity.DrawingMethods;
 import gt.gameloop.TimeConstants;
+import gt.settings.ColorSetting;
+import gt.settings.GameSettings;
 import gt.util.EMath;
+import ss.main.SortingSimulator;
 
 public class SInteger {
     private static final long FADE_TIME = TimeConstants.NANOS_PER_SECOND;
 
-    public static final Color ELEMENT_COLOR = Color.GREEN;
-    public static final Color ACCESS_COLOR = Color.CYAN;
-    public static final Color COMPARE_COLOR = Color.MAGENTA;
-    public static final Color INSERT_COLOR = Color.RED;
+    public static final Color ELEMENT_COLOR = GameSettings.getValue("ss.element", new ColorSetting(Color.GREEN));
+    public static final Color ACCESS_COLOR = GameSettings.getValue("ss.access", new ColorSetting(Color.CYAN));
+    public static final Color COMPARE_COLOR = GameSettings.getValue("ss.compare", new ColorSetting(Color.MAGENTA));
+    public static final Color INSERT_COLOR = GameSettings.getValue("ss.insert", new ColorSetting(Color.RED));
 
     public final int value;
 
@@ -39,9 +42,9 @@ public class SInteger {
         long timeNow = System.nanoTime();
         Color[] colors = new Color[3];
         int numColors = 0;
-        double accessPercent = getColorPercent(timeNow, lastAccess);
-        double comparePercent = getColorPercent(timeNow, lastCompare);
-        double insertPercent = getColorPercent(timeNow, lastInsert);
+        double accessPercent = getColorPercent(timeNow, SortingSimulator.getAccessTime() * TimeConstants.NANOS_PER_MILLISECOND, lastAccess);
+        double comparePercent = getColorPercent(timeNow, SortingSimulator.getCompareTime() * TimeConstants.NANOS_PER_MILLISECOND, lastCompare);
+        double insertPercent = getColorPercent(timeNow, SortingSimulator.getInsertTime() * TimeConstants.NANOS_PER_MILLISECOND, lastInsert);
         if (accessPercent < 1) {
             colors[numColors++] = DrawingMethods.fadeToColor(ACCESS_COLOR, ELEMENT_COLOR, accessPercent);
         }
@@ -60,8 +63,8 @@ public class SInteger {
         }
     }
 
-    private static double getColorPercent(double timeNow, long timeThen) {
-        return Math.min((timeNow - timeThen) / FADE_TIME, 1);
+    private static double getColorPercent(double timeNow, double maybeFade, long timeThen) {
+        return Math.min((timeNow - timeThen) / Math.max(FADE_TIME, maybeFade), 1);
     }
 
     private static Color colorAverage(Color[] colors, int numColors) {
