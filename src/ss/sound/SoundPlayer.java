@@ -54,7 +54,6 @@ public class SoundPlayer {
                     toPlay = fd;
                 }
                 if (keepPlaying && toPlay != null) {
-                    System.out.println(toPlay);
                     playInternal(toPlay);
                 }
             }
