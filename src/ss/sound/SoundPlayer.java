@@ -54,6 +54,7 @@ public class SoundPlayer {
                     toPlay = fd;
                 }
                 if (keepPlaying && toPlay != null) {
+                    System.out.println(toPlay);
                     playInternal(toPlay);
                 }
             }
@@ -96,9 +97,8 @@ public class SoundPlayer {
             sinWave[sinWave.length - 1 - i] = (byte) Math.round(sinWave[sinWave.length - 1 - i] * scale);
         }
 
-        if (fd.duration < MIN_DURATION) {
-            sdl.flush();
-        }
+        sdl.flush();
+
         sdl.write(sinWave, 0, sinWave.length);
     }
 
