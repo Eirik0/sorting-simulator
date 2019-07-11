@@ -11,8 +11,8 @@ import javax.sound.sampled.SourceDataLine;
 import gt.async.ThreadWorker;
 
 public class SoundPlayer {
-    private static final float SAMPLE_RATE = 48000;
-    private static final int NUM_FADE_SAMPLES = 160;
+    private static final float SAMPLE_RATE = 44100;
+    private static final int NUM_FADE_SAMPLES = 300;
     private static final double VOLUME = 0.3;
 
     private static final double MIN_DURATION = 10;
@@ -31,7 +31,7 @@ public class SoundPlayer {
         AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, false);
         try {
             sdl = AudioSystem.getSourceDataLine(af);
-            sdl.open(af);
+            sdl.open(af, (int) SAMPLE_RATE);
             sdl.start();
         } catch (LineUnavailableException e) {
             closeSDL();
@@ -54,11 +54,26 @@ public class SoundPlayer {
                     toPlay = fd;
                 }
                 if (keepPlaying && toPlay != null) {
-                    playInternal(toPlay);
+                    double offBy = waitForSDL();
+                    playInternal(toPlay, offBy);
                 }
             }
         });
         soundThreadWorker.waitForStart();
+    }
+
+    private double waitForSDL() {
+        int sdlRemaining = sdl.getBufferSize() - sdl.available();
+        double offBy = (double) sdlRemaining / SAMPLE_RATE * 1000;
+        while (sdlRemaining > 0) {
+            try {
+                Thread.sleep(Math.round((double) sdlRemaining / SAMPLE_RATE * 1000) + 1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            sdlRemaining = sdl.getBufferSize() - sdl.available();
+        }
+        return offBy;
     }
 
     public synchronized void play(double[] ns, int numElements, double duration) {
@@ -72,9 +87,9 @@ public class SoundPlayer {
         notify();
     }
 
-    public void playInternal(FrequenciesAndDuration fd) {
+    public void playInternal(FrequenciesAndDuration fd, double offBy) {
         int numFds = fd.frequencies.length;
-        double duration = Math.max(fd.duration, MIN_DURATION);
+        double duration = Math.max(fd.duration - offBy, MIN_DURATION);
         int numSamples = (int) Math.round(SAMPLE_RATE * duration / 1000);
 
         double[] dSinWave = new double[numSamples];
@@ -115,7 +130,7 @@ public class SoundPlayer {
 
     public void clear() {
         playQueue.clear();
-        sdl.flush();
+        sdl.drain();
     }
 
     private void closeSDL() {

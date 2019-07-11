@@ -73,7 +73,7 @@ public class SArray {
     public SInteger get(int i) {
         SInteger element = array[i];
         TimeManager.waitForTime(SortingSimulator.getAccessTime());
-        SortingSimulator.playSound(new double[] { element.value }, array.length, SortingSimulator.getAccessTime());
+        SortingSimulator.playSound(new double[] { element.value }, SortingSimulator.getAccessTime());
         ComplexityCounter.incrementAccesses();
         element.lastAccess = System.nanoTime();
         return element;
@@ -85,7 +85,7 @@ public class SArray {
 
     private void setCopy(int i, SInteger element) {
         TimeManager.waitForTime(SortingSimulator.getInsertTime());
-        SortingSimulator.playSound(new double[] { element.value }, array.length, SortingSimulator.getInsertTime());
+        SortingSimulator.playSound(new double[] { element.value }, SortingSimulator.getInsertTime());
         ComplexityCounter.incrementInserts();
         element.lastInsert = System.nanoTime();
         array[i] = element;
@@ -93,7 +93,7 @@ public class SArray {
 
     public int compare(SInteger e1, SInteger e2) {
         TimeManager.waitForTime(SortingSimulator.getCompareTime());
-        SortingSimulator.playSound(new double[] { e1.value, e2.value }, array.length, SortingSimulator.getCompareTime());
+        SortingSimulator.playSound(new double[] { e1.value, e2.value }, SortingSimulator.getCompareTime());
         ComplexityCounter.incrementCompares();
         e1.lastCompare = System.nanoTime();
         e2.lastCompare = System.nanoTime();

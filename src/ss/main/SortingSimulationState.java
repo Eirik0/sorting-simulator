@@ -59,7 +59,7 @@ public class SortingSimulationState implements GameState {
         String[] allArrayTypes = SortingSimulator.getArrayTypeNames();
         selectedAlgorithm = SortingSimulator.getAlgorithm(allAlgorithms[0]);
         selectedType = SortingSimulator.getArrayType(allArrayTypes[0]);
-        selectedLength = 25;
+        selectedLength = SortingSimulator.INITIAL_ARRAY_SIZE;
         array = new SArray(selectedType, selectedLength);
 
         sortingState = new SortDrawer();
@@ -123,6 +123,7 @@ public class SortingSimulationState implements GameState {
                     sliderAmountLabel.setText(Integer.toString(selectedLength));
                     SortingSimulator.stopSort(false);
                     array = new SArray(selectedType, selectedLength);
+                    SortingSimulator.setArraySize(selectedLength);
                 }))
                 .add(1, sliderAmountLabel)
                 .add(1, new ETextLabel(accLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Access:", true))
@@ -171,21 +172,19 @@ public class SortingSimulationState implements GameState {
         componentPanel.handleUserInput(input);
         switch (input) {
         case MINUS_KEY_PRESSED:
-            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() * 1.25);
-            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() * 1.25);
-            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() * 1.25);
+            SortingSimulator.setAllTimes(SortingSimulator.getAccessTime() * 1.25,
+                    SortingSimulator.getInsertTime() * 1.25,
+                    SortingSimulator.getCompareTime() * 1.25);
             setSliderValues();
             break;
         case EQUALS_KEY_PRESSED:
-            SortingSimulator.setAccessTime(SortingSimulator.getAccessTime() / 1.25);
-            SortingSimulator.setInsertTime(SortingSimulator.getInsertTime() / 1.25);
-            SortingSimulator.setCompareTime(SortingSimulator.getCompareTime() / 1.25);
+            SortingSimulator.setAllTimes(SortingSimulator.getAccessTime() / 1.25,
+                    SortingSimulator.getInsertTime() / 1.25,
+                    SortingSimulator.getCompareTime() / 1.25);
             setSliderValues();
             break;
         case R_KEY_PRESSED:
-            SortingSimulator.setAccessTime(10);
-            SortingSimulator.setInsertTime(10);
-            SortingSimulator.setCompareTime(10);
+            SortingSimulator.setAllTimes(10, 10, 10);
             setSliderValues();
             break;
         case SPACE_KEY_PRESSED:

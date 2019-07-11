@@ -16,6 +16,7 @@ import ss.interrupt.SortStopper;
 import ss.sound.SoundPlayer;
 
 public class SortingSimulator {
+    public static final int INITIAL_ARRAY_SIZE = 25;
     public static final Font SORT_FONT_LARGE = new Font(Font.MONOSPACED, Font.BOLD, 24);
     public static final Font SORT_FONT_SMALL = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 
@@ -24,6 +25,7 @@ public class SortingSimulator {
     private static double compareTime = 10;
 
     private static String algorithmName = "";
+    private static int arraySize = INITIAL_ARRAY_SIZE;
 
     private static final ThreadWorker sortThreadWorker = new ThreadWorker();
     private static final SoundPlayer soundPlayer = new SoundPlayer();
@@ -116,8 +118,19 @@ public class SortingSimulator {
         compareTime = time;
     }
 
-    public static void playSound(double[] ns, int numElements, double desiredDuration) {
-        soundPlayer.play(ns, numElements, desiredDuration);
+    public static void setAllTimes(double access, double insert, double compare) {
+        soundPlayer.clear();
+        accessTime = access;
+        insertTime = insert;
+        compareTime = compare;
+    }
+
+    public static void setArraySize(int size) {
+        arraySize = size;
+    }
+
+    public static void playSound(double[] ns, double desiredDuration) {
+        soundPlayer.play(ns, arraySize, desiredDuration);
     }
 
     public static String getCurrentAlgorithmName() {
