@@ -1,7 +1,5 @@
 package ss.sound;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -14,14 +12,17 @@ import gt.async.ThreadWorker;
 
 public class SoundPlayer {
     private static final float SAMPLE_RATE = 48000;
-    private static final int NUM_FADE_SAMPLES = 80;
+    private static final int NUM_FADE_SAMPLES = 160;
     private static final double VOLUME = 0.3;
 
-    private static final double MIN_FREQ = 27.5; // A0
-    private static final double MAX_FREQ = 4185; // C8
+    private static final double MIN_DURATION = 10;
+
+    private static final double C5_FREQ = 261.63;
+    private static final int NUM_OCTAVES = 5;
+    private static final double MIN_FREQ = C5_FREQ / 4; // C3
 
     private final ThreadWorker soundThreadWorker = new ThreadWorker();
-    private final Queue<FrequencyAndDuration> playQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<FrequenciesAndDuration> playQueue = new ConcurrentLinkedQueue<>();
     private volatile boolean keepPlaying = true;
 
     private SourceDataLine sdl = null;
@@ -47,41 +48,43 @@ public class SoundPlayer {
                         throw new RuntimeException(e);
                     }
                 }
-                List<FrequencyAndDuration> hzList = new ArrayList<>();
-                FrequencyAndDuration fd;
+                FrequenciesAndDuration toPlay = null;
+                FrequenciesAndDuration fd;
                 while ((fd = playQueue.poll()) != null) {
-                    hzList.add(fd);
+                    toPlay = fd;
                 }
-                if (keepPlaying && hzList.size() > 0) {
-                    playInternal(hzList);
+                if (keepPlaying && toPlay != null) {
+                    playInternal(toPlay);
                 }
             }
         });
         soundThreadWorker.waitForStart();
     }
 
-    public synchronized void play(double[] ns, int numElements, double desiredDuration) {
-        for (double n : ns) {
-            playQueue.add(new FrequencyAndDuration(n * (MAX_FREQ - MIN_FREQ) / numElements, Math.max(desiredDuration, 10)));
+    public synchronized void play(double[] ns, int numElements, double duration) {
+        double[] freqs = new double[ns.length];
+        for (int i = 0; i < ns.length; ++i) {
+            double percent = ns[i] / numElements;
+            double key = percent * NUM_OCTAVES;
+            freqs[i] = MIN_FREQ * Math.pow(2, key);
         }
+        playQueue.add(new FrequenciesAndDuration(freqs, duration));
         notify();
     }
 
-    public void playInternal(List<FrequencyAndDuration> fds) {
-        int numFds = fds.size();
-        double duration = 0;
-        for (FrequencyAndDuration fd : fds) {
-            duration = Math.max(duration, fd.duration);
-        }
+    public void playInternal(FrequenciesAndDuration fd) {
+        int numFds = fd.frequencies.length;
+        double duration = Math.max(fd.duration, MIN_DURATION);
         int numSamples = (int) Math.round(SAMPLE_RATE * duration / 1000);
 
         double[] dSinWave = new double[numSamples];
-        for (FrequencyAndDuration fd : fds) {
+        for (double freq : fd.frequencies) {
             for (int i = 0; i < numSamples; ++i) {
-                double angle = 2 * Math.PI * i * (fd.frequency / SAMPLE_RATE);
+                double angle = 2 * Math.PI * i * (freq / SAMPLE_RATE);
                 dSinWave[i] += Math.sin(angle);
             }
         }
+
         byte[] sinWave = new byte[numSamples];
         for (int i = 0; i < numSamples; ++i) {
             sinWave[i] = (byte) Math.round(dSinWave[i] * 127 * VOLUME / numFds);
@@ -92,7 +95,10 @@ public class SoundPlayer {
             sinWave[i] = (byte) Math.round(sinWave[i] * scale);
             sinWave[sinWave.length - 1 - i] = (byte) Math.round(sinWave[sinWave.length - 1 - i] * scale);
         }
-        sdl.flush();
+
+        if (fd.duration < MIN_DURATION) {
+            sdl.flush();
+        }
         sdl.write(sinWave, 0, sinWave.length);
     }
 
@@ -105,6 +111,10 @@ public class SoundPlayer {
             keepPlaying = false;
             notify();
         }
+        clear();
+    }
+
+    public void clear() {
         playQueue.clear();
         sdl.flush();
     }
@@ -117,12 +127,12 @@ public class SoundPlayer {
         sdl = null;
     }
 
-    private static class FrequencyAndDuration {
-        final double frequency;
+    private static class FrequenciesAndDuration {
+        final double[] frequencies;
         final double duration;
 
-        public FrequencyAndDuration(double frequency, double duration) {
-            this.frequency = frequency;
+        public FrequenciesAndDuration(double[] frequencies, double duration) {
+            this.frequencies = frequencies;
             this.duration = duration;
         }
     }

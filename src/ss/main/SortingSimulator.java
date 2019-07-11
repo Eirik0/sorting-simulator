@@ -94,6 +94,7 @@ public class SortingSimulator {
     }
 
     public static void setAccessTime(double time) {
+        soundPlayer.clear();
         accessTime = time;
     }
 
@@ -102,6 +103,7 @@ public class SortingSimulator {
     }
 
     public static void setInsertTime(double time) {
+        soundPlayer.clear();
         insertTime = time;
     }
 
@@ -110,6 +112,7 @@ public class SortingSimulator {
     }
 
     public static void setCompareTime(double time) {
+        soundPlayer.clear();
         compareTime = time;
     }
 
