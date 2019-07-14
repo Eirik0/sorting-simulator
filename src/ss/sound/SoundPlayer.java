@@ -1,5 +1,6 @@
 package ss.sound;
 
+import java.nio.ByteBuffer;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -12,14 +13,13 @@ import gt.async.ThreadWorker;
 
 public class SoundPlayer {
     private static final float SAMPLE_RATE = 44100;
-    private static final int NUM_FADE_SAMPLES = 300;
+    private static final int NUM_FADE_SAMPLES = 250;
     private static final double VOLUME = 0.3;
 
     private static final double MIN_DURATION = 10;
 
-    private static final double C5_FREQ = 261.63;
-    private static final int NUM_OCTAVES = 5;
-    private static final double MIN_FREQ = C5_FREQ / 4; // C3
+    private static final double MIN_FREQ = 65.40639; // C2
+    private static final double NUM_OCTAVES = 5;
 
     private final ThreadWorker soundThreadWorker = new ThreadWorker();
     private final Queue<FrequenciesAndDuration> playQueue = new ConcurrentLinkedQueue<>();
@@ -28,7 +28,7 @@ public class SoundPlayer {
     private SourceDataLine sdl = null;
 
     public SoundPlayer() {
-        AudioFormat af = new AudioFormat(SAMPLE_RATE, 8, 1, true, false);
+        AudioFormat af = new AudioFormat(SAMPLE_RATE * 2, 16, 1, true, true);
         try {
             sdl = AudioSystem.getSourceDataLine(af);
             sdl.open(af, (int) SAMPLE_RATE);
@@ -95,25 +95,25 @@ public class SoundPlayer {
         double[] dSinWave = new double[numSamples];
         for (double freq : fd.frequencies) {
             for (int i = 0; i < numSamples; ++i) {
-                double angle = 2 * Math.PI * i * (freq / SAMPLE_RATE);
-                dSinWave[i] += Math.sin(angle);
+                double angle = 2 * Math.PI * i * (freq / (2 * SAMPLE_RATE));
+                dSinWave[i] += Math.sin(angle) / numFds;
             }
         }
 
-        byte[] sinWave = new byte[numSamples];
-        for (int i = 0; i < numSamples; ++i) {
-            sinWave[i] = (byte) Math.round(dSinWave[i] * 127 * VOLUME / numFds);
+        for (int i = 0; i < NUM_FADE_SAMPLES && i < dSinWave.length / 2; i++) {
+            double scale = (double) i / NUM_FADE_SAMPLES;
+            dSinWave[i] = dSinWave[i] * scale;
+            dSinWave[dSinWave.length - 1 - i] = dSinWave[dSinWave.length - 1 - i] * scale;
         }
 
-        for (int i = 0; i < NUM_FADE_SAMPLES && i < sinWave.length / 2; i++) {
-            double scale = (double) i / NUM_FADE_SAMPLES;
-            sinWave[i] = (byte) Math.round(sinWave[i] * scale);
-            sinWave[sinWave.length - 1 - i] = (byte) Math.round(sinWave[sinWave.length - 1 - i] * scale);
+        ByteBuffer buffer = ByteBuffer.allocate(numSamples * 2);
+        for (int i = 0; i < numSamples; ++i) {
+            buffer.putShort((short) Math.round(dSinWave[i] * VOLUME * Short.MAX_VALUE));
         }
 
         sdl.flush();
 
-        sdl.write(sinWave, 0, sinWave.length);
+        sdl.write(buffer.array(), 0, numSamples * 2);
     }
 
     public void start() {
