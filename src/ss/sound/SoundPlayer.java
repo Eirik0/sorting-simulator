@@ -18,6 +18,13 @@ public class SoundPlayer {
 
     private static final double MIN_DURATION = 10;
 
+    private static final double[] FREQUENCIES = { 4186.009, 3951.066, 3729.310, 3520.000, 3322.438, 3135.963, 2959.955, 2793.826, 2637.020, 2489.016, 2349.318,
+            2217.461, 2093.005, 1975.533, 1864.655, 1760.000, 1661.219, 1567.982, 1479.978, 1396.913, 1318.510, 1244.508, 1174.659, 1108.731, 1046.502,
+            987.7666, 932.3275, 880.0000, 830.6094, 783.9909, 739.9888, 698.4565, 659.2551, 622.2540, 587.3295, 554.3653, 523.2511, 493.8833, 466.1638,
+            440.0000, 415.3047, 391.9954, 369.9944, 349.2282, 329.6276, 311.1270, 293.6648, 277.1826, 261.6256, 246.9417, 233.0819, 220.0000, 207.6523,
+            195.9977, 184.9972, 174.6141, 164.8138, 155.5635, 146.8324, 138.5913, 130.8128, 123.4708, 116.5409, 110.0000, 103.8262, 97.99886, 92.49861,
+            87.30706, 82.40689, 77.78175, 73.41619, 69.29566, 65.40639 };
+
     private static final double MIN_FREQ = 65.40639; // C2
     private static final double NUM_OCTAVES = 5;
 
@@ -81,10 +88,23 @@ public class SoundPlayer {
         for (int i = 0; i < ns.length; ++i) {
             double percent = ns[i] / numElements;
             double key = percent * NUM_OCTAVES;
-            freqs[i] = MIN_FREQ * Math.pow(2, key);
+            double approxFreq = MIN_FREQ * Math.pow(2, key);
+            freqs[i] = findFreq(approxFreq);
         }
         playQueue.add(new FrequenciesAndDuration(freqs, duration));
         notify();
+    }
+
+    private static double findFreq(double approxFreq) {
+        if (approxFreq < FREQUENCIES[FREQUENCIES.length - 1]) {
+            return FREQUENCIES[FREQUENCIES.length - 1];
+        }
+        for (int i = FREQUENCIES.length - 2; i > 0; --i) {
+            if (approxFreq < FREQUENCIES[i]) {
+                return FREQUENCIES[i + 1];
+            }
+        }
+        return FREQUENCIES[0];
     }
 
     public void playInternal(FrequenciesAndDuration fd, double offBy) {
