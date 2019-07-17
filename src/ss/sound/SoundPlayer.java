@@ -26,7 +26,7 @@ public class SoundPlayer {
             87.30706, 82.40689, 77.78175, 73.41619, 69.29566, 65.40639 };
 
     private static final double MIN_FREQ = 65.40639; // C2
-    private static final double NUM_OCTAVES = 5;
+    private static final double NUM_OCTAVES = 6;
 
     private final ThreadWorker soundThreadWorker = new ThreadWorker();
     private final Queue<FrequenciesAndDuration> playQueue = new ConcurrentLinkedQueue<>();
