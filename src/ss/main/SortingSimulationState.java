@@ -11,7 +11,7 @@ import gt.ecomponent.list.EComboBox;
 import gt.ecomponent.location.EFixedLocation;
 import gt.ecomponent.location.ESizableComponentLocation;
 import gt.ecomponent.slider.ESlider;
-import gt.gameentity.GameImageDrawer;
+import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGameImage;
 import gt.gameentity.IGraphics;
 import gt.gameloop.TimeConstants;
@@ -37,7 +37,7 @@ public class SortingSimulationState implements GameState {
     private static final double SELECTION_LABEL_WIDTH = 75;
     private static final double TS_HEIGHT = (2 * CB_HEIGHT - PADDING) / 3;
 
-    private final GameImageDrawer imageDrawer;
+    private final IGameImageDrawer imageDrawer;
 
     private final SortDrawer sortingState;
     private final IGameImage sortingStateImage;
