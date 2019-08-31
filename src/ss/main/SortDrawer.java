@@ -12,8 +12,8 @@ import ss.array.SInteger;
 public class SortDrawer implements Drawable, Sizable {
     private static final int TITLE_HEIGHT = 60;
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
     public SortDrawer() {
     }
@@ -45,8 +45,8 @@ public class SortDrawer implements Drawable, Sizable {
         int colsToDraw = colsAndRows[0];
         int rowsToDraw = colsAndRows[1];
 
-        double arrayHeight = (double) (height - TITLE_HEIGHT) / rowsToDraw;
-        double elementWidth = (double) width / colsToDraw;
+        double arrayHeight = (height - TITLE_HEIGHT) / rowsToDraw;
+        double elementWidth = width / colsToDraw;
         double elementUnitHeight = arrayHeight / colsToDraw;
         double y0 = arrayHeight + TITLE_HEIGHT;
         int columnNum = 0;
@@ -89,7 +89,7 @@ public class SortDrawer implements Drawable, Sizable {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
     }

@@ -2,18 +2,19 @@ package ss.main;
 
 import gt.component.ComponentCreator;
 import gt.ecomponent.EBackground;
-import gt.ecomponent.EComponentLocation;
 import gt.ecomponent.EComponentPanel;
 import gt.ecomponent.EComponentPanelBuilder;
 import gt.ecomponent.ETextLabel;
 import gt.ecomponent.button.EButton;
 import gt.ecomponent.list.EComboBox;
+import gt.ecomponent.list.EComponentLocation;
 import gt.ecomponent.location.EFixedLocation;
-import gt.ecomponent.location.ESizableComponentLocation;
+import gt.ecomponent.location.SizedComponentLocationAdapter;
 import gt.ecomponent.slider.ESlider;
-import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGameImage;
+import gt.gameentity.IGameImageDrawer;
 import gt.gameentity.IGraphics;
+import gt.gameentity.Sized;
 import gt.gameloop.TimeConstants;
 import gt.gamestate.GameState;
 import gt.gamestate.GameStateManager;
@@ -37,12 +38,13 @@ public class SortingSimulationState implements GameState {
     private static final double SELECTION_LABEL_WIDTH = 75;
     private static final double TS_HEIGHT = (2 * CB_HEIGHT - PADDING) / 3;
 
+    private double width;
+
     private final IGameImageDrawer imageDrawer;
 
     private final SortDrawer sortingState;
     private final IGameImage sortingStateImage;
 
-    private final ESizableComponentLocation cpBackgroundLoc;
     private final EComponentPanel componentPanel;
 
     private SortingAlgorithm selectedAlgorithm;
@@ -90,8 +92,6 @@ public class SortingSimulationState implements GameState {
 
         sortingStateImage = imageDrawer.newGameImage(ComponentCreator.DEFAULT_WIDTH, EMath.round(ComponentCreator.DEFAULT_HEIGHT - uiHeight));
 
-        cpBackgroundLoc = new ESizableComponentLocation(0, 0, ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT - uiHeight);
-
         accessTimeSlider = new ESlider(accSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000,
                 time -> SortingSimulator.setAccessTime(time / 1000.0));
         compareTimeSlider = new ESlider(comSliderLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), 1, EMath.round(TimeConstants.NANOS_PER_MILLISECOND), 10000,
@@ -100,7 +100,7 @@ public class SortingSimulationState implements GameState {
                 time -> SortingSimulator.setInsertTime(time / 1000.0));
 
         componentPanel = new EComponentPanelBuilder(gameStateManager.getMouseTracker())
-                .add(0, new EBackground(cpBackgroundLoc, ComponentCreator.backgroundColor()))
+                .add(0, new EBackground(new SizedComponentLocationAdapter(new UISize(this), 0, 0), ComponentCreator.backgroundColor()))
                 .add(2, new ETextLabel(algorithmLabelLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), "Algorithm:", true))
                 .add(2, new EComboBox(algorithmCBLoc.scale(UI_WIDTH_SCALE, UI_HEIGHT_SCALE), imageDrawer, allAlgorithms, 15, 0, i -> {
                     selectedAlgorithm = SortingSimulator.getAlgorithm(allAlgorithms[i]);
@@ -161,10 +161,10 @@ public class SortingSimulationState implements GameState {
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public void setSize(double width, double height) {
+        this.width = width;
         sortingState.setSize(width, EMath.round(height - uiHeight));
         sortingStateImage.setSize(width, EMath.round(height - uiHeight));
-        cpBackgroundLoc.setSize(width, EMath.round(uiHeight));
     }
 
     @Override
@@ -200,5 +200,23 @@ public class SortingSimulationState implements GameState {
         accessTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getAccessTime() * 1000));
         insertTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getInsertTime() * 1000));
         compareTimeSlider.setCurrentValue(EMath.round(SortingSimulator.getCompareTime() * 1000));
+    }
+
+    private class UISize implements Sized {
+        private final SortingSimulationState parent;
+
+        public UISize(SortingSimulationState parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public double getWidth() {
+            return parent.width;
+        }
+
+        @Override
+        public double getHeight() {
+            return parent.uiHeight;
+        }
     }
 }
