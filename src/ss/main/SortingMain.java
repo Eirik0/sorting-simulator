@@ -1,14 +1,8 @@
 package ss.main;
 
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import gt.component.ComponentCreator;
 import gt.component.GamePanel;
 import gt.component.MainFrame;
 import gt.gamestate.GameStateManager;
-import gt.settings.GameSettings;
 import ss.algorithm.BinaryTreeSort;
 import ss.algorithm.BogoSort;
 import ss.algorithm.BubbleSort;
@@ -38,8 +32,8 @@ import ss.algorithm.SortingAlgorithm;
 import ss.algorithm.StoogeSort;
 
 public class SortingMain {
-    private static final String TITLE = "Sorting Simulator";
     private static final String PROJECT_NAME = "sorting-simulator";
+    private static final String TITLE = "Sorting Simulator";
 
     private static final SortingAlgorithm[] SLOW_SORTING_ALGORITHMS = new SortingAlgorithm[] {
             new BubbleSort(),
@@ -90,25 +84,11 @@ public class SortingMain {
         SortingSimulator.registerSorts(CUSTOM_ALGORITHMS);
         SortingSimulator.registerArrayTypes();
 
-        ComponentCreator.setCrossPlatformLookAndFeel();
-        GameSettings.loadSettings(PROJECT_NAME);
-
-        GamePanel mainPanel = new GamePanel("Sort");
-        mainPanel.setPreferredSize(new Dimension(ComponentCreator.DEFAULT_WIDTH, ComponentCreator.DEFAULT_HEIGHT));
+        MainFrame mainFrame = new MainFrame(PROJECT_NAME, TITLE);
+        GamePanel mainPanel = mainFrame.getGamePanel();
 
         GameStateManager gameStateManager = mainPanel.getGameStateManager();
         gameStateManager.setGameState(new SortingSimulationState(gameStateManager));
-
-        MainFrame mainFrame = new MainFrame(TITLE, mainPanel);
-        mainFrame.getFrame().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    GameSettings.saveSettings(PROJECT_NAME);
-                } catch (Exception ex) {
-                }
-            }
-        });
 
         mainFrame.show();
     }
